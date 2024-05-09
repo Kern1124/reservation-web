@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "reservation-backend", "reservation-backend\reservation-backend.csproj", "{F52018EB-AC01-4926-BD30-15184431BAF0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "reservation-tests", "reservation-tests\reservation-tests.csproj", "{264D55ED-9C71-4868-99DB-F9E7AC98083D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{F52018EB-AC01-4926-BD30-15184431BAF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F52018EB-AC01-4926-BD30-15184431BAF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F52018EB-AC01-4926-BD30-15184431BAF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{264D55ED-9C71-4868-99DB-F9E7AC98083D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{264D55ED-9C71-4868-99DB-F9E7AC98083D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{264D55ED-9C71-4868-99DB-F9E7AC98083D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{264D55ED-9C71-4868-99DB-F9E7AC98083D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

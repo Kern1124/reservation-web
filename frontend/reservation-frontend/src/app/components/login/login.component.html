@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-title>LOGIN</mat-card-title>
+  <mat-card-content>
+  <form [formGroup]="loginForm" (ngSubmit)="submit()">
+    <p>
+      <mat-form-field>
+        <input type="text" matInput placeholder="E-mail" formControlName="mailAddress">
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <input type="password" matInput placeholder="Password" formControlName="password">
+      </mat-form-field>
+    </p>
+    <p *ngIf="submitted && mailAddress.errors?.['required']" class="error">
+      E-mail is a required field.
+    </p>
+    <p *ngIf="submitted && password.errors?.['required']" class="error">
+      Password is a required field.
+    </p>
+    <p *ngIf="failed" class="error">
+      {{failedMessage}}
+    </p>
+    <div class="button">
+      <button type="submit" mat-button>Login</button>
+    </div>
+  </form>
+  </mat-card-content>
+</mat-card>

@@ -1,6 +1,10 @@
 using FastEndpoints;
+using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
+using reservation_backend.Database;
+using reservation_backend.Interfaces;
+using reservation_backend.Services;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.RequestAndResponseLogging;
@@ -14,14 +18,32 @@ logger.Information("Starting reservation api");
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
-
-//string? connectionString = builder.Configuration.GetConnectionString("SqliteConnection");
-// builder.Services.AddDbContext<>(options => options.UseSqlite(connectionString));
+var connectionString = builder.Configuration.GetConnectionString("SqliteConnection");
+builder.Services.AddDbContext<Context>(options => options.UseSqlite(connectionString));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddFastEndpoints().SwaggerDocument();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "specificOrigins",
+        policy =>
+        {
+            policy.AllowCredentials();
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
+            policy.WithOrigins("http://localhost:4200");
+        });
+});
+builder.Services
+    .AddAuthenticationCookie(validFor: TimeSpan.FromMinutes(15), options =>
+    {
+        options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/Unauthorized/";
+    })
+    .AddAuthorization()
+    .AddFastEndpoints().SwaggerDocument();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -32,7 +54,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
-app.UseSerilogRequestAndResponseLogging();
+app.UseCors("specificOrigins");
+
 app.UseHttpsRedirection();
-app.UseFastEndpoints().UseSwaggerGen();
+app.UseAuthentication()
+    .UseAuthorization()
+    .UseFastEndpoints(x => x.Errors.UseProblemDetails())
+    .UseSwaggerGen();
 app.Run();

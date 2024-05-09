@@ -1,0 +1,28 @@
+<mat-toolbar color="secondary">
+  <mat-toolbar-row>
+    <span class="navbar-title">Reservation project</span>
+  </mat-toolbar-row>  
+  <mat-toolbar-row class="navbar-container">
+    <mat-nav-list class="navbar-left">
+      <mat-list-item class="navbar-item">
+        Home
+      </mat-list-item>
+    </mat-nav-list>
+    <mat-nav-list class="navbar-right">
+      @if (this.authService.isAuthenticated$ | async) {
+        <mat-list-item (click)="onLogout()" class="navbar-item">
+          Logout
+        </mat-list-item>
+      } 
+      @else {
+        <mat-list-item (click)="onRegister()" class="navbar-item">
+          Register
+        </mat-list-item>
+        <mat-list-item (click)="onLogin()" class="navbar-item">
+          Login
+        </mat-list-item>
+      }
+    </mat-nav-list>
+  </mat-toolbar-row>
+</mat-toolbar>
+

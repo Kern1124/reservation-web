@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+    --rose: #A26769;
+    --mint: #4FB286;
+    --beige: #F6E7CB;
+    --dark: #23252B;
+    --nav-text: #dadada;
+    --nav-select: #141519;
+}
+
+body {
+    background-color: var(--beige);
+    margin: 0;
+    padding: 0;
+    font-family: Lato,Helvetica Neue,helvetica,sans-serif;
+}
+
+li {
+    list-style: none;
+}

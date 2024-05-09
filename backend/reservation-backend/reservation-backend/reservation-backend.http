@@ -1,6 +1,6 @@
 @reservation_backend_HostAddress = http://localhost:5095
 
-GET {{reservation_backend_HostAddress}}/weatherforecast/
+POST {{reservation_backend_HostAddress}}/api/users/register
 Accept: application/json
 
 ###

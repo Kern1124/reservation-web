@@ -11,6 +11,7 @@
         <PackageReference Include="FastEndpoints" Version="5.25.0" />
         <PackageReference Include="FastEndpoints.Attributes" Version="5.25.0" />
         <PackageReference Include="FastEndpoints.Messaging.Core" Version="5.25.0" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.25.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.25.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
@@ -25,12 +26,6 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="5.1.0-dev-00943" />
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00972" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="OfferedServices\Endpoints\" />
-      <Folder Include="Reservations\Endpoints\" />
-      <Folder Include="Users\Endpoints\" />
     </ItemGroup>
 
 </Project>
