@@ -1,0 +1,20 @@
+.booked {
+    text-decoration: line-through;
+    color: grey;
+}
+
+.booking-container {
+  height: 100%;
+}
+mat-list {
+  overflow: scroll;
+}
+mat-list-item {
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+mat-list-item:hover {
+    background-color: #e0e0e0; 
+    cursor: pointer;
+}
+  

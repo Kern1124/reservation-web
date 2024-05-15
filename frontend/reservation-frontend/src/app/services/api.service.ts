@@ -11,10 +11,16 @@ export class ApiService {
     private httpClient: HttpClient
   ) {}
 
-  get<T>(url: string, body?: {}, options?: Options): Observable<T>{
+  get<T>(url: string, options?: Options): Observable<T>{
     return this.httpClient.get(url, options) as Observable<T>;
   } 
   post<T>(url: string, body?: {}, options?: Options): Observable<T>{
     return this.httpClient.post(url, body, options) as Observable<T>;
+  }
+  put<T>(url: string, body?: {}, options?: Options): Observable<T>{
+    return this.httpClient.put(url, body, options) as Observable<T>;
+  }
+  delete<T>(url: string, options?: Options): Observable<T>{
+    return this.httpClient.delete(url, options) as Observable<T>;
   }
 }

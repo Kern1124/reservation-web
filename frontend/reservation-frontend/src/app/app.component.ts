@@ -7,7 +7,6 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
 
-  isAuthenticated = this.authService.isAuthenticated()
   title = 'reservation-frontend';
   constructor (private authService: AuthService){
   }

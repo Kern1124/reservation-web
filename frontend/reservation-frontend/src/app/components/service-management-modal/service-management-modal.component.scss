@@ -1,0 +1,15 @@
+mat-card *{
+    width: 100%;
+}
+
+mat-card{
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    height: 100%;
+}
+
+.button-container {
+    display: flex;
+    align-items: flex-end;
+}

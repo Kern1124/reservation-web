@@ -8,7 +8,5 @@ import { LoginResponse } from 'src/types';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent{
-  username?: string;
-  mail?: string;
   constructor(){}
 }

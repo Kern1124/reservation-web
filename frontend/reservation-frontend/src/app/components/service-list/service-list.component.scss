@@ -1,0 +1,47 @@
+
+.service-list {
+    margin: 1em;
+    gap: 3em;
+}
+
+.untouchable {
+    pointer-events: none;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+}
+
+.show-infront {
+    position: fixed; /* Sit on top of the page content */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}
+
+.invisible {
+    display: none;
+}
+
+mat-card {
+    width: 350px;
+}
+img {
+    height: 150px;
+}
+
+@media screen and (max-width: 600px){
+    .service-list {
+        grid-template-columns: 50% 50%;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 959px){
+    .service-container {
+        flex: 1 1 33%;
+    }
+}
+
+  

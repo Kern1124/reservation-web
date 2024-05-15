@@ -1,5 +1,6 @@
 using FastEndpoints;
 using reservation_backend.Features.Users.Login;
+using reservation_backend.Models;
 using reservation_backend.Users;
 
 namespace reservation_backend.Features.Users.Authenticated;

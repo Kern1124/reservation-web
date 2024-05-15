@@ -3,38 +3,27 @@ mat-nav-list.list-horizontal {
     padding: 0;
     display: flex;
     .mat-list-item {
-        display: inline-block;
         height: auto;
         width: auto;
 }
+
+
 }
 .navbar-container {
     display: flex;
     justify-content: space-between;
 }
 
-.navbar-right {
-    display: flex;
-    justify-content: space-evenly;
-}
+// .navbar-right {
+//     display: flex;
+//     justify-content: space-evenly;
+//     align-items: end;
+
+// }
 .navbar-right * {
-    flex: 1 1 0;
+    padding-left: 0.5em;
     text-align: center;
-    min-width: 100px;
 }
 .navbar-title {
-    color: var(--rose);
-    cursor: pointer;
-}
-.navbar-title:hover {
-    color: var(--nav-text);
-}
-
-.mat-toolbar-row, .mat-toolbar-single-row {
-    height: unset !important;
-}
-
-.mat-list-item .mat-list-item-content {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
+    cursor: default;
 }

@@ -15,6 +15,21 @@ import { AuthService } from './services/auth.service';
 import { UsersService } from './services/users.service';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { authGuard } from './guards/auth.guard';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { ServiceListComponent } from './components/service-list/service-list.component';
+import { ServiceDetailComponent } from './components/service-detail/service-detail.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCalendar, MatDatepickerModule } from '@angular/material/datepicker';
+import { BookingPickerComponent } from './components/booking-picker/booking-picker.component';
+import { MatNativeDateModule } from '@angular/material/core';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { ServiceManagerComponent } from './components/service-manager/service-manager.component';
+import { ServiceManagementModalComponent } from './components/service-management-modal/service-management-modal.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ReservationListComponent } from './components/reservation-list/reservation-list.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -22,7 +37,15 @@ import { authGuard } from './guards/auth.guard';
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    NavbarComponent
+    NavbarComponent,
+    UserProfileComponent,
+    ServiceListComponent,
+    ServiceDetailComponent,
+    BookingPickerComponent,
+    ConfirmDialogComponent,
+    ServiceManagerComponent,
+    ServiceManagementModalComponent,
+    ReservationListComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +54,15 @@ import { authGuard } from './guards/auth.guard';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    MatTabsModule,
+    MatGridListModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatSelectModule
   ],
   providers: [
     provideHttpClient(withInterceptors([credentialsInterceptor])),

@@ -4,6 +4,7 @@ using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using reservation_backend.Database;
 using reservation_backend.Interfaces;
+using reservation_backend.Models;
 using reservation_backend.Services;
 using Serilog;
 using Serilog.Extensions.Logging;
@@ -44,6 +45,9 @@ builder.Services
     .AddFastEndpoints().SwaggerDocument();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IOSService, OSService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 
 var app = builder.Build();
 

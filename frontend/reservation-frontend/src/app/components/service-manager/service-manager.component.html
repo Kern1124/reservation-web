@@ -1,0 +1,89 @@
+<div class="service-manager-container">
+    <mat-card class="service-manager">
+        <mat-card-title>Your services:</mat-card-title>
+        <mat-card-subtitle>
+            The following list respresents services owned by you. You can edit
+            your services or remove them.
+            <p>Each user is limited to owning 5 services.</p>
+        </mat-card-subtitle>
+        <mat-accordion>
+            <mat-expansion-panel hideToggle *ngFor="let service of services">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{service.name}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{service.location.country}} - {{service.location.city}} ({{service.location.address}})
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <h4 mat>Description:</h4>
+                <p>{{ service.description }}</p>
+                <mat-action-row>
+                    <button mat-button
+                        (click)="openService(service)">Manage</button>
+                    <button mat-button class="remove-button"
+                        (click)="removeService(service)">Remove</button>
+                </mat-action-row>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-card>
+    <mat-card class="service-creator">
+        <mat-card-title>Create a service:</mat-card-title>
+        <mat-card-subtitle>
+            <p>
+                You can create your own service here:
+            </p>
+        </mat-card-subtitle>
+        <form class="service-creator-form" [formGroup]="this.createServiceForm"
+            (ngSubmit)="createService()">
+            <mat-label></mat-label>
+            <mat-form-field>
+                <mat-label>Service name</mat-label>
+                <input matInput formControlName="name"
+                    [errorStateMatcher]="this.errorStateMatcher"
+                    placeholder="Service name">
+                <mat-error>
+                    Service name is a required field with length of at least 5
+                    characters
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Service description</mat-label>
+                <textarea matInput formControlName="desc"
+                    [errorStateMatcher]="this.errorStateMatcher"
+                    placeholder="Service description"></textarea>
+                <mat-error>
+                    Service description is a required field with length of at
+                    least 24 characters
+                </mat-error>
+            </mat-form-field>
+            <div class="form-select-container">
+                <mat-form-field>
+                    <mat-label>Service country</mat-label>
+                    <mat-select [(value)]="selectedCountry" formControlName="country"
+                        [errorStateMatcher]="this.errorStateMatcher"
+                        placeholder="Country">
+                        <mat-option *ngFor="let country of countries" [value]="country">
+                            {{country.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Service city</mat-label>
+                    <mat-select formControlName="city"
+                        [errorStateMatcher]="this.errorStateMatcher" placeholder="City">
+                        <mat-option *ngFor="let city of selectedCountry.cities" [value]="city">{{city}}</mat-option>
+                     </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Service address</mat-label>
+                    <input matInput [errorStateMatcher]="this.errorStateMatcher" formControlName="address" placeholder="Address">
+                </mat-form-field>
+            </div>
+            <div *ngIf="creationFailed">{{creationFailedMessage}}</div>
+            <div class="button-container">
+                <button mat-button (submit)="createService()">Create</button>
+            </div>
+        </form>
+    </mat-card>
+</div>

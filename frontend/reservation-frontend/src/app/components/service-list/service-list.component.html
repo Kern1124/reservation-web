@@ -1,0 +1,45 @@
+<!-- In your Angular HTML template -->
+<mat-grid-list cols="4" gutterSize="1em" rowHeight="300px" class="service-list">
+    <mat-grid-tile *ngFor="let service of services">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-header>
+          <mat-card-title>{{ service.name }}</mat-card-title>
+        </mat-card-header>
+            <img
+            src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+            />
+        <mat-card-content>
+          {{ service.description }}
+        </mat-card-content>
+        <mat-card-actions>
+          <button *ngIf="(authService.isAuthenticatedFn())" mat-button (click)="openDialog(service) ">Book</button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+  
+
+<!-- <div class="service-list-container">
+    <div class="service-list">
+        <div *ngFor="let service of services" class="service-container">
+        <mat-card class="mat-elevation-z4">
+            <mat-card-header>
+            <mat-card-title>{{service.name}}</mat-card-title>
+            </mat-card-header>
+            <img
+            mat-card-image
+            src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+            />
+            <mat-card-content>
+            <p>
+                {{service.description}}
+            </p>
+            </mat-card-content>
+            <mat-card-actions>
+            <button mat-button (click)="onAppoint(service)">Appoint</button>
+            </mat-card-actions>
+        </mat-card>
+        </div>
+  </div>
+</div>
+<app-service-detail [ngClass]="serviceOnSpotlight ? 'show-infront' : 'invisible'"></app-service-detail> -->

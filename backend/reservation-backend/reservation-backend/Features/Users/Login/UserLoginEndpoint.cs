@@ -3,6 +3,7 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using reservation_backend.Enums;
 using reservation_backend.Interfaces;
+using reservation_backend.Models;
 using reservation_backend.Users;
 
 namespace reservation_backend.Features.Users.Login;
@@ -20,7 +21,6 @@ public class UserLoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         var (loginResult, user) = UserService.Login(req.MailAddress, req.Password);
         if (user == null)
         {
-            ;
             switch (loginResult)
             {
                 case LoginResult.Empty: AddError("Credentials can not be empty."); break;
@@ -36,6 +36,7 @@ public class UserLoginEndpoint : Endpoint<LoginRequest, LoginResponse>
                     u.Roles.Add("logged-user");
                     u["username"] = user.Username;
                     u["mailAddress"] = user.MailAddress;
+                    u["id"] = user.Id.ToString();
                 }
             );
             Response.User = new UserDto(user);

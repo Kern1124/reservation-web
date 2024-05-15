@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { AuthenticatedResponse, LoginRequest, LoginResponse, Options, RegisterRequest, RegisterResponse, UserDto } from 'src/types';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, shareReplay, Subject, tap } from 'rxjs';
 import { env } from '../env';
 
 
@@ -9,12 +9,10 @@ import { env } from '../env';
   providedIn: 'root'
 })
 export class AuthService {
-  static instance: AuthService;
-  isAuthenticated$: Observable<boolean>;
+  authenticatedUser: Subject<UserDto | undefined> = new Subject();
+  isAuthenticated$: Subject<boolean> = new Subject();
   constructor(private api: ApiService) {
-    if (!this.isAuthenticated$){
-      this.isAuthenticated$ = this.isAuthenticated()
-    }
+    this.refreshAuthenticated()
   }
 
   login = (body: LoginRequest): Observable<LoginResponse> => {
@@ -31,6 +29,10 @@ export class AuthService {
     return this.api.post(`${env.apiUrl}/users/register`, body)
   }
 
+  isAuthenticatedFn = (): boolean => {
+    return localStorage.getItem("authenticated") !== null;
+  }
+
   getAuthenticatedUser = (): Observable<AuthenticatedResponse> => {
     return this.api.get<AuthenticatedResponse>(`${env.apiUrl}/users/authenticated`, {
         responseType: "json"
@@ -38,14 +40,19 @@ export class AuthService {
   }
 
   refreshAuthenticated = () => {
-    this.isAuthenticated$ = this.isAuthenticated()
-  }
-
-  isAuthenticated = (): Observable<boolean> => {
-    return this.getAuthenticatedUser().pipe(
-      map((response) => {
-          return true;
-      }),
-      catchError( (error) => {return of(false)}));
+    this.getAuthenticatedUser().subscribe(
+    {
+      next: v => {
+        localStorage.setItem("authenticated","true")
+        this.authenticatedUser.next(v.user)
+        this.isAuthenticated$.next(true);
+      },
+      error: e => {
+        localStorage.removeItem("authenticated")
+        this.authenticatedUser.next(undefined);
+        this.isAuthenticated$.next(false);
+      }
+    }
+    )
   }
 }

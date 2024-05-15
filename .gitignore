@@ -1,0 +1,12 @@
+**/bin/*
+**/obj/*
+**/*.dll
+**/packages/**/*
+**/.idea
+**/*.db*
+**/*.txt
+**/.DS_Store
+
+
+
+

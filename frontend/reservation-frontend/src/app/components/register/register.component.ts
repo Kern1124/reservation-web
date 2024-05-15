@@ -39,7 +39,7 @@ export class RegisterComponent {
           this.router.navigate(["home"])
         },
         error: (errorResponse: HttpErrorResponse) => {
-          var error: ProblemDetails = errorResponse.error;
+          let error: ProblemDetails = errorResponse.error;
           this.failed = true;
           if (error.errors[0] != null){
             this.failedMessage = error.errors[0].reason;

@@ -1,0 +1,20 @@
+<mat-card class="booking-container">
+    <mat-card-header>
+      <mat-card-title>Available terms:</mat-card-title>
+    </mat-card-header>
+    <mat-form-field appearance="fill">
+      <mat-label>Choose a date</mat-label>
+      <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" [(ngModel)]="this.selectedDate" (dateChange)="fetchBookingTerms()">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-list>
+      <mat-list-item *ngFor="let term of bookingTerms" (click)="bookTerm(term)" [ngClass]="{'booked': !term.available}">
+        <div>
+          <h4 matListItemTitle>{{ term.timeSlot }}</h4>
+          <span matListItemLine *ngIf="term.available">Click to book</span>
+          <span matListItemLine *ngIf="!term.available">Booked</span>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card>

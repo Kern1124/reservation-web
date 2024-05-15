@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 :root {
     --rose: #A26769;
@@ -7,10 +8,11 @@
     --dark: #23252B;
     --nav-text: #dadada;
     --nav-select: #141519;
+    --smoke: #F7F4F3;
+    --tekhelet: #3D348B;
 }
 
 body {
-    background-color: var(--beige);
     margin: 0;
     padding: 0;
     font-family: Lato,Helvetica Neue,helvetica,sans-serif;

@@ -36,7 +36,7 @@ using reservation_backend.Database;
 using reservation_backend.Enums;
 using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
-using reservation_backend.Users;
+using reservation_backend.Models;
 
 namespace reservation_backend.Services;
 
@@ -114,4 +114,15 @@ public class UserService : IUserService
         }
     }
 
+    public User? GetUserById(int id)
+    {
+        return _databaseContext.Users.FirstOrDefault(u => u.Id == id);
+    }
+    
+    public List<Reservation> GetUserReservations(int id)
+    {
+        return _databaseContext.Reservations
+            .Where(r => r.User.Id == id)
+            .ToList();
+    }
 }

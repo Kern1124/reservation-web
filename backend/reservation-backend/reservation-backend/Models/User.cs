@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using reservation_backend.Services;
 
-namespace reservation_backend.Users;
+namespace reservation_backend.Models;
 [Table("Users")]
 public class User
 {
@@ -11,8 +11,16 @@ public class User
     public string MailAddress { get; set; }
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
+    public List<Reservation> Reservations { get; set; }
+    public List<OfferedService> OwnedServices { get; set; }
     public User(string username, string mailAddress)
     {   
+        Username = username;
+        MailAddress = mailAddress;
+    }
+    public User(int id, string username, string mailAddress)
+    {
+        Id = id;
         Username = username;
         MailAddress = mailAddress;
     }

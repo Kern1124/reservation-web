@@ -4,6 +4,7 @@ using reservation_backend.Database;
 using reservation_backend.Enums;
 using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
+using reservation_backend.Models;
 using reservation_backend.Services;
 using reservation_backend.Users.Requests;
 using reservation_backend.Users.Responses;

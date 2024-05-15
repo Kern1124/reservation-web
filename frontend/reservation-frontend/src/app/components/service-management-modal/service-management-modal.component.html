@@ -1,0 +1,20 @@
+<mat-card>
+    <h3 mat-card-title>Managing - {{data?.name!}}</h3>
+    <form [formGroup]="manageServiceForm" (ngSubmit)="submit()">
+        <mat-label></mat-label>
+        <mat-form-field>
+            <mat-label>Service name</mat-label>
+            <input matInput [errorStateMatcher]="errorStateMatcher" formControlName="name" [placeholder]="data?.name!">
+            <mat-error>Service name requires at least 5 characters!</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Service description</mat-label>
+            <textarea matInput [errorStateMatcher]="errorStateMatcher" formControlName="desc" [placeholder]="data?.description!"></textarea>
+            <mat-error>Service description requires at least 24 characters!</mat-error>
+        </mat-form-field>
+        <div class="button-container">
+            <button mat-button (submit)="submit()">Save</button>
+            <button mat-button (click)="closeDialog()">Close</button>
+        </div>
+    </form>
+</mat-card>

@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using reservation_backend.Database;
 using reservation_backend.Enums;
+using reservation_backend.Models;
 using reservation_backend.Services;
 using reservation_backend.Users;
 
@@ -33,13 +34,12 @@ public class UserTests
     {
         // InstantiateTestUser chooses random salt and hashes password "test"
         // We test User Service and expect Hash Service to hash data properly
-        // (could also be considered integration testing, because the HashingService is a minor dependency )
+        // (HashingService is a minor dependency)
         var data = new List<User>
         {
             User.InstantiateTestUser("dave", "dave@gmail.com", "test"),
             User.InstantiateTestUser("waaa", "wwa@gmail.com", "test"),
             User.InstantiateTestUser("dummyExists", "dumdum@gmail.com", "test")
-
         }.AsQueryable();
             
             
@@ -68,7 +68,7 @@ public class UserTests
             Assert.Equal(LoginResult.UserNotFound, resultEnum);
             Assert.Null(user);
         }
-        [Fact] // Rellies on hashing being implemented correctly - 
+        [Fact]
         public void Login_IncorrectPassword_ReturnTupleWithNull()
         {
             var userService = InitializeMockedService();
@@ -98,12 +98,12 @@ public class UserTests
     public class UserRegisterTests
     {
         [Fact]
-        public void Register_UserAlreadyExists_ReturnFailed()
+        public void Register_UserMailAlreadyExists_ReturnFailed()
         {
             var userService = InitializeMockedService();
             var testUser = new User("dave", "dave@gmail.com");
             var (resultEnum, user) = userService.Register(testUser, "test");
-            Assert.Equal(RegisterResult.UserAlreadyExists, resultEnum);
+            Assert.Equal(RegisterResult.UserMailAlreadyExists, resultEnum);
             Assert.Null(user);
         }
         [Fact]
