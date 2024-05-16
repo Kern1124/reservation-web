@@ -12,6 +12,7 @@ public class GetAllCountriesEndpoint : EndpointWithoutRequest<GetCountriesRespon
     {
         Get("/api/countries");
         AllowAnonymous();
+        Options(x => x.WithTags("Countries"));
     }
 
     public override async Task HandleAsync(CancellationToken ct)

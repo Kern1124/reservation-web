@@ -97,8 +97,15 @@ export interface UpdateServiceResponse {
     message: string
 }
 
+export interface ReservationListResponse {
+    reservations: ReservationDto[]
+}
 export interface ReservationDto {
-    date: Date
+    id: number,
+    service: OfferedService,
+    dateStart: string,
+    dateEnd: string,
+    timeSlot: string
 }
 
 export interface LocationDto {

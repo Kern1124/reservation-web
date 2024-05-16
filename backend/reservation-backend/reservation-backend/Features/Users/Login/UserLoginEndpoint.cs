@@ -15,6 +15,7 @@ public class UserLoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     {
         Post("/api/users/login");
         AllowAnonymous();
+        Options(x => x.WithTags("Users"));
     }
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {

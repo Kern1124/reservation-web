@@ -1,18 +1,20 @@
 using FastEndpoints;
 using reservation_backend.Database;
+using reservation_backend.Features.OfferedServices.GetMyServices;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
 
-namespace reservation_backend.Features.OfferedServices.GetServicesByOwnerId;
+namespace reservation_backend.Features.OfferedServices.GetMyServices;
 
-public class GetServicesByOwnerIdEndpoint : EndpointWithoutRequest<GetServicesByOwnerIdResponse>
+public class GetMyServicesEndpoint : EndpointWithoutRequest<GetMyServicesResponse>
 {
     public Context DatabaseContext { get; set; }
     public IOSService OSService { get; set; }
     public override void Configure()
     {
-        Get("/api/services/owner");
+        Get("/api/services/my");
         Roles("logged-user");
+        Options(x => x.WithTags("OfferedServices"));
 
     }
 

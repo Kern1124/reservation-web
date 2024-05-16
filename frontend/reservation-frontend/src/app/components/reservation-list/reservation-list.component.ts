@@ -1,6 +1,9 @@
+import { DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReservationsService } from 'src/app/services/reservations.service';
 import { ReservationDto } from 'src/types';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 @Component({
   selector: 'app-reservation-list',
   templateUrl: './reservation-list.component.html',
@@ -9,14 +12,31 @@ import { ReservationDto } from 'src/types';
 export class ReservationListComponent implements OnInit {
   reservations: ReservationDto[];
 
-  constructor(private reservationsService: ReservationsService) {}
+  constructor(
+    private dialog: MatDialog,
+    private reservationsService: ReservationsService) {}
 
   ngOnInit(): void {
-    // this.reservations = this.reservationsService.getReservations();
+    this.reservationsService.getMyReservations().subscribe(v => {
+      this.reservations = v.reservations;
+    });
   }
 
-  onCancel(id: string): void {
-    // this.reservationsService.cancelReservation(id);
-    // this.reservations = this.reservationsService.getReservations();
+  onCancel(reservation: ReservationDto): void {
+    let dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+      width: '35%',
+      height: '35%',
+      data: {
+        message: "Are you sure you want to cancel this reservation?", 
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed){
+        this.reservationsService.removeReservation(reservation.id).subscribe({
+          next: () => this.reservationsService.getMyReservations().subscribe( v => this.reservations = v.reservations),
+        })
+      }
+    })
   }
 }

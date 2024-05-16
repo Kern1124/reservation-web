@@ -19,6 +19,8 @@ public class UserRegisterEndpoint : Endpoint<RegisterRequest, RegisterResponse>
     {
         Post("/api/users/register");
         AllowAnonymous();
+        Options(x => x.WithTags("Users"));
+
     }
     public override async Task HandleAsync(RegisterRequest req, CancellationToken ct)
     {

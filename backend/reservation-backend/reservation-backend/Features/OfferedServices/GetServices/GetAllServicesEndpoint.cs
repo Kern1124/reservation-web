@@ -11,6 +11,8 @@ public class GetAllServicesEndpoint : EndpointWithoutRequest<GetServicesResponse
     {
         Get("/api/services");
         AllowAnonymous();
+        Options(x => x.WithTags("OfferedServices"));
+
     }
 
     public override async Task HandleAsync(CancellationToken ct)

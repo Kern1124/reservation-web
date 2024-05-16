@@ -16,29 +16,30 @@ public class CreateUserReservationEndpoint : Endpoint<CreateUserReservationReque
     {
         Post("/api/reservations");
         Roles("logged-user");
+        Options(x => x.WithTags("Reservations"));
     }
     public override async Task HandleAsync(CreateUserReservationRequest req, CancellationToken ct)
     {
         var service = OSService.GetServiceById(req.ServiceId);
-        if (service == null)
-        {
-            AddError("Service not found");
-            await SendErrorsAsync();
-        }
         int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value);
         var user = UserService.GetUserById(userId);
-        if (user == null)
-        {
-            AddError("Service not found");
-            await SendErrorsAsync();
-        }
         
+        if (service == null || user == null)
+        {
+            AddError("Service or userId (specified by cookies) not found");
+            await SendErrorsAsync();
+            return;
+        }
+
         Reservation? reservation = ReservationService.CreateUserReservation(user!, service!, req.DateStart, req.DateEnd);
         if (reservation == null)
         {
             AddError("Time slot full");
             await SendErrorsAsync();
         }
-        Response.Message = "Successfully created reservation";
+        else
+        {
+            Response.Message = "Successfully created reservation";
+        }
     }
 }

@@ -10,9 +10,9 @@ using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.RequestAndResponseLogging;
 
+var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
 var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
-    .WriteTo.Console()
     .CreateLogger();
 
 logger.Information("Starting reservation api");
@@ -42,7 +42,7 @@ builder.Services
         options.AccessDeniedPath = "/Unauthorized/";
     })
     .AddAuthorization()
-    .AddFastEndpoints().SwaggerDocument();
+    .AddFastEndpoints().SwaggerDocument(o => o.AutoTagPathSegmentIndex = 0);
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOSService, OSService>();

@@ -13,6 +13,7 @@ public class GetUserReservationsEndpoint : Endpoint<GetUserReservationsRequest, 
     {
         Get("/api/users/{id}/reservations");
         Roles("logged-user");
+        Options(x => x.WithTags("Users"));
     }
     public override async Task HandleAsync(GetUserReservationsRequest req, CancellationToken ct)
     {
@@ -22,8 +23,12 @@ public class GetUserReservationsEndpoint : Endpoint<GetUserReservationsRequest, 
             AddError("User not found");
             await SendErrorsAsync();
         }
-        Response.Reservations = user!.Reservations
-            .Select(r => new ReservationDto(r, r.OfferedService))
-            .ToList();
+        else
+        {
+            Response.Reservations = UserService.GetUserReservations(user!.Id)
+                .Select(r => new ReservationDto(r, r.OfferedService))
+                .ToList();
+        }
+        
     }
 }

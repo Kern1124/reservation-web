@@ -8,6 +8,7 @@ public class LogoutEndpoint : EndpointWithoutRequest
     public override void Configure()
     {
         Post("/api/users/logout");
+        Options(x => x.WithTags("Users"));
     }
 
     public override async Task HandleAsync(CancellationToken ct)

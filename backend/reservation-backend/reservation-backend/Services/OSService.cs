@@ -1,9 +1,9 @@
 using System.Globalization;
-using System.Xml;
 using Microsoft.EntityFrameworkCore;
 using reservation_backend.Database;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
+using Serilog.Core;
 
 namespace reservation_backend.Services;
 
@@ -20,8 +20,6 @@ public class OSService : IOSService
         string format = "HH:mm";
         var ptStart = DateTime.ParseExact(timeSlot.Start, format, CultureInfo.CurrentCulture).TimeOfDay;
         var ptEnd = DateTime.ParseExact(timeSlot.End, format, CultureInfo.CurrentCulture).TimeOfDay;
-        Console.WriteLine(existingReservations.Count);
-        existingReservations.ForEach(r => Console.WriteLine($"{ptStart} - {ptEnd} | {r.DateStart} - {r.DateEnd}"));
         bool available = !existingReservations.Any(r => ptStart.TotalSeconds <= r.DateEnd.TimeOfDay.TotalSeconds &&
                                                         r.DateStart.TimeOfDay.TotalSeconds <= ptEnd.TotalSeconds);
         return new TimeSlotStateDto(timeSlot.Start, timeSlot.End, available, null);
@@ -43,16 +41,32 @@ public class OSService : IOSService
             .FirstOrDefault(s => s.Id == id);
     }
 
-    public bool AddService(OfferedService service)
+    public OfferedService? AddService(OfferedService service)
     {
-        _databaseContext.OfferedServices.Add(service);
-        _databaseContext.SaveChanges();
-        return true;
+        OfferedService? result;
+        try
+        {
+            result = _databaseContext.OfferedServices.Add(service).Entity;
+            _databaseContext.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            result = null;
+        }
+        return result;
     }
 
     public bool UpdateService(OfferedService service, (string? name, string? desc) newServiceDetails)
     {
-        var entity = _databaseContext.OfferedServices.Update(service).Entity;
+        OfferedService entity;
+        try
+        {
+            entity = _databaseContext.OfferedServices.Update(service).Entity;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
         if (newServiceDetails.name != null)
         {
             entity.Name = newServiceDetails.name;
@@ -76,15 +90,23 @@ public class OSService : IOSService
         return true;
     }
     
-    public List<TimeSlotStateDto> GetTimeSlotsByServiceIdAndDate(int id, DateTime date)
+    public List<TimeSlotStateDto>? GetTimeSlotsByServiceIdAndDate(int id, DateTime date)
     {
-        var existingReservations = _databaseContext.Reservations
-            .Where(r => r.OfferedService.Id == id && r.DateStart.Date == date.Date)
-            .ToList();
-        List<TimeSlotStateDto> result = _databaseContext.OfferedServices
-            .Include(s => s.TimeSlots)
-            .SelectMany(s => s.TimeSlots)
-            .Select(t => CheckAvailabilityAndReturnState(id, date, t, existingReservations)).ToList();
+        List<TimeSlotStateDto>? result;
+        try
+        {
+            var existingReservations = _databaseContext.Reservations
+                .Where(r => r.OfferedService.Id == id && r.DateStart.Date == date.Date)
+                .ToList();
+            result = _databaseContext.OfferedServices
+                .Include(s => s.TimeSlots)
+                .SelectMany(s => s.TimeSlots)
+                .Select(t => CheckAvailabilityAndReturnState(id, date, t, existingReservations)).ToList();
+        }
+        catch (Exception)
+        {
+            result = null;
+        }
         return result;
     }
     

@@ -9,12 +9,13 @@ namespace reservation_backend.Features.OfferedServices.CreateService;
 public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServiceResponse>
 {
     public IOSService OSService { get; set; }
-    public Context DatabaseContext { get; set; }
+    public IUserService UserService { get; set; }
 
     public override void Configure()
     {
         Post("/api/services");
         Roles("logged-user");
+        Options(x => x.WithTags("OfferedServices"));
         Validator<ServiceLocationValidator>();
         Validator<ServiceNameDescValidator>();
     }
@@ -22,26 +23,25 @@ public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServic
     public override async Task HandleAsync(CreateServiceRequest req, CancellationToken ct)
     {
         User? user = null;
-        try
-        {
-            user = DatabaseContext.Users.FirstOrDefault(
-                u => u.Id.ToString() == HttpContext.User.FindFirst("id")!.Value);
-        }
-        catch (Exception e)
-        {
-            AddError("Unexpected error");
-            await SendErrorsAsync();
-        }
-        
+        user = UserService.GetUserById(int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value));
         if (user == null)
         {
             AddError("User not found, incorrect claim");
             await SendErrorsAsync();
+            return;
         }
         var location = new Location(req.Location.Country, req.Location.City, req.Location.Address);
         var service = new OfferedService(user!, req.Name, req.Description, location);
-        OSService.AddService(service);
-        Response.Message = "Service created";
-        await SendOkAsync(ct);
+        if (OSService.AddService(service) == null)
+        {
+            AddError("Failed to create the service");
+            await SendErrorsAsync();
+        }
+        else
+        {
+            Response.Message = "Service created";
+            await SendOkAsync(ct); 
+        }
+        
     }
 }

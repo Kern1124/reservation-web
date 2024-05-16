@@ -32,6 +32,8 @@
    29. Write comments on top of all methods to describe their usage and expected input types and return type information.
    30. Use fiddler/Postman tool to check the HTTP/network traffic and bandwidth information to trace the performance of web application and services.
  */
+
+using Microsoft.EntityFrameworkCore;
 using reservation_backend.Database;
 using reservation_backend.Enums;
 using reservation_backend.Exceptions;
@@ -122,6 +124,8 @@ public class UserService : IUserService
     public List<Reservation> GetUserReservations(int id)
     {
         return _databaseContext.Reservations
+            .Include(r => r.OfferedService)
+            .Include(r => r.OfferedService.Location)
             .Where(r => r.User.Id == id)
             .ToList();
     }

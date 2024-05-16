@@ -9,6 +9,8 @@ public class GetServiceTimeSlotsEndpoint : Endpoint<TimeSlotRequest, TimeSlotRes
     public override void Configure()
     {
         Get("/api/services/{serviceId}/time-slots/{date}");
+        Options(x => x.WithTags("OfferedServices"));
+
     }
 
     public override async Task HandleAsync(TimeSlotRequest req, CancellationToken ct)

@@ -53,4 +53,31 @@ public class ReservationService : IReservationService
             .Include(r => r.User)
             .Where(r => r.User.Id == id).ToList();
     }
+    
+    public Reservation? GetReservationById(int id)
+    {
+        Reservation? result;
+        try
+        {
+            result = _databaseContext.Reservations
+                .Include(r => r.OfferedService)
+                .Include(r => r.OfferedService.Owner)
+                .Include(r => r.OfferedService.Location)
+                .Include(r => r.User)
+                .FirstOrDefault(r => r.Id == id);
+
+        }
+        catch (Exception)
+        {
+            result = null;
+        }
+
+        return result;
+    }
+    
+    public void RemoveReservation(Reservation reservation)
+    {
+        _databaseContext.Reservations.Remove(reservation);
+        _databaseContext.SaveChanges();
+    }
 }

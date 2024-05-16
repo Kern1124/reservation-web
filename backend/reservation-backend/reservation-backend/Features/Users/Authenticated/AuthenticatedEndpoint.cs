@@ -10,6 +10,7 @@ public class AuthenticatedEndpoint : EndpointWithoutRequest<AuthenticatedRespons
     public override void Configure()
     {
         Get("/api/users/authenticated");
+        Options(x => x.WithTags("Users"));
     }
 
     public override async Task HandleAsync(CancellationToken ct)

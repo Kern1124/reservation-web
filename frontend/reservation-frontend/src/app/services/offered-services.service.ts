@@ -16,7 +16,7 @@ export class OfferedServicesService {
   }
 
   public getOwnedServices = (): Observable<GetServicesByOwnerIdResponse> => {
-    return this.api.get(`${env.apiUrl}/services/owner/`)
+    return this.api.get(`${env.apiUrl}/services/my/`)
   }
 
   public getTimeSlots = (serviceId: number, date: string): Observable<GetTimeSlotsResponse> => {

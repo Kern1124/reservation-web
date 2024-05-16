@@ -14,6 +14,8 @@ public class GetMyReservationsEndpoint : EndpointWithoutRequest<GetUserReservati
     {
         Get("/api/reservations/my");
         Roles("logged-user");
+        Options(x => x.WithTags("Reservations"));
+
     }
     public override async Task HandleAsync(CancellationToken ct)
     {
@@ -24,10 +26,12 @@ public class GetMyReservationsEndpoint : EndpointWithoutRequest<GetUserReservati
             AddError("User not found");
             await SendErrorsAsync();
         }
-
-        Response.Reservations = ReservationService
-            .GetReservationsByUserId(userId)
-            .Select(r => new ReservationDto(r, r.OfferedService))
-            .ToList();
+        else
+        {
+            Response.Reservations = ReservationService
+                .GetReservationsByUserId(userId)
+                .Select(r => new ReservationDto(r, r.OfferedService))
+                .ToList();
+        }
     }
 }
