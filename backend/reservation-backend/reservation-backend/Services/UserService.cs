@@ -116,17 +116,27 @@ public class UserService : IUserService
         }
     }
 
-    public User? GetUserById(int id)
+    public async Task<User> GetUserById(int id)
     {
-        return _databaseContext.Users.FirstOrDefault(u => u.Id == id);
+        User result;
+        try
+        {
+            result = await _databaseContext.Users.FirstAsync(u => u.Id == id);
+        }
+        catch (Exception)
+        {
+            throw new ResourceNotFoundException($"User with id: '{id}' not found.");
+        }
+
+        return result;
     }
     
-    public List<Reservation> GetUserReservations(int id)
+    public Task<List<Reservation>> GetUserReservations(int id)
     {
         return _databaseContext.Reservations
             .Include(r => r.OfferedService)
             .Include(r => r.OfferedService.Location)
             .Where(r => r.User.Id == id)
-            .ToList();
+            .ToListAsync();
     }
 }

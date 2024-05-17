@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.EntityFrameworkCore;
 using reservation_backend.Database;
+using reservation_backend.Enums;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
 
@@ -14,26 +16,46 @@ public class ReservationService : IReservationService
     {
         _databaseContext = databaseContext;
     }
-
-    public Reservation? CreateUserReservation(User user, OfferedService service, DateTime dateStart, DateTime dateEnd)
+    private async Task<Reservation?> GetServiceReservationByDateAndTime(int id, DateTime dateStart, DateTime dateEnd)
     {
-        bool conflict = _databaseContext.OfferedServices.SelectMany(
-            s => s.Reservations).Any(r => dateStart <= r.DateEnd && r.DateStart <= dateEnd);
-        if (conflict)
+        var result = await _databaseContext.OfferedServices
+            .Include(s => s.Reservations)
+            .Where(s => s.Id == id).SelectMany(s => s.Reservations)
+            .FirstOrDefaultAsync(r => dateStart <= r.DateEnd && r.DateStart <= dateEnd);
+        return result;
+    }
+    public async Task<Reservation> CreateUserReservation(int userId, int serviceId, DateTime dateStart, DateTime dateEnd)
+    {
+        OfferedService service;
+        User user;
+        try
         {
-            return null;
+            service = await _databaseContext.OfferedServices
+                .Include(s => s.Owner)
+                .Include(s => s.Location)
+                .FirstAsync(s => s.Id == serviceId);
+            user = await _databaseContext.Users.FirstAsync(u => u.Id == userId);
         }
-        Reservation res = new Reservation(user, service, dateStart, dateEnd);
+        catch (Exception)
+        {
+            throw new ResourceNotFoundException("Service or user not found.");
+        }
+        
+        var conflictingReservation = await GetServiceReservationByDateAndTime(userId, dateStart, dateEnd);
+        if (conflictingReservation != null)
+        {
+            throw new ResourceExistsException("Reservation time slot full");
+        }
+        Reservation res = new Reservation(user!, service, dateStart, dateEnd);
         _databaseContext.Reservations.Add(res);
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
         return res;
     }
-
-    public List<Reservation> GetReservationTermsByServiceId(int id, DateTime? date = null)
+    public async Task<List<Reservation>> GetReservationTermsByServiceId(int id, DateTime? date = null)
     {
-        var reservations = _databaseContext.Reservations
+        var reservations = await _databaseContext.Reservations
             .Where(r => r.OfferedService.Id == id)
-            .ToList();
+            .ToListAsync();
 
         if (date != null)
         {
@@ -45,39 +67,39 @@ public class ReservationService : IReservationService
         return reservations;
     }
 
-    public List<Reservation> GetReservationsByUserId(int id)
+    public async Task<List<Reservation>> GetReservationsByUserId(int id)
     {
-        return _databaseContext.Reservations
+        return await _databaseContext.Reservations
             .Include(r => r.OfferedService)
             .Include(r => r.OfferedService.Location)
             .Include(r => r.User)
-            .Where(r => r.User.Id == id).ToList();
+            .Where(r => r.User.Id == id).ToListAsync();
     }
     
-    public Reservation? GetReservationById(int id)
+    public async Task<Reservation> GetReservationById(int id)
     {
         Reservation? result;
         try
         {
-            result = _databaseContext.Reservations
+            result = await _databaseContext.Reservations
                 .Include(r => r.OfferedService)
                 .Include(r => r.OfferedService.Owner)
                 .Include(r => r.OfferedService.Location)
                 .Include(r => r.User)
-                .FirstOrDefault(r => r.Id == id);
+                .FirstAsync(r => r.Id == id);
 
         }
         catch (Exception)
         {
-            result = null;
+            throw new ResourceNotFoundException($"Reservation with id: '{id}' not found.");
         }
 
         return result;
     }
     
-    public void RemoveReservation(Reservation reservation)
+    public async void RemoveReservation(Reservation reservation)
     {
         _databaseContext.Reservations.Remove(reservation);
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 }

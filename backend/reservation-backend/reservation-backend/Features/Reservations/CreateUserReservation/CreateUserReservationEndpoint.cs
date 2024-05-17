@@ -1,4 +1,5 @@
 using FastEndpoints;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
 using reservation_backend.Services;
@@ -20,26 +21,23 @@ public class CreateUserReservationEndpoint : Endpoint<CreateUserReservationReque
     }
     public override async Task HandleAsync(CreateUserReservationRequest req, CancellationToken ct)
     {
-        var service = OSService.GetServiceById(req.ServiceId);
         int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value);
-        var user = UserService.GetUserById(userId);
-        
-        if (service == null || user == null)
+        try
         {
-            AddError("Service or userId (specified by cookies) not found");
-            await SendErrorsAsync();
+            await ReservationService.CreateUserReservation(userId, req.ServiceId, req.DateStart, req.DateEnd);
+        }
+        catch (ResourceNotFoundException)
+        {
+            AddError("Service or user not found");
+            await SendErrorsAsync(404);
             return;
         }
-
-        Reservation? reservation = ReservationService.CreateUserReservation(user!, service!, req.DateStart, req.DateEnd);
-        if (reservation == null)
+        catch (ResourceExistsException)
         {
             AddError("Time slot full");
             await SendErrorsAsync();
+            return;
         }
-        else
-        {
-            Response.Message = "Successfully created reservation";
-        }
+        Response.Message = "Successfully created reservation";
     }
 }

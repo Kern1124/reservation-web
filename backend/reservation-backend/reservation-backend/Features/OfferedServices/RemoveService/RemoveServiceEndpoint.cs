@@ -1,5 +1,7 @@
 using FastEndpoints;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
+using reservation_backend.Models;
 
 namespace reservation_backend.Features.OfferedServices.RemoveService;
 
@@ -18,15 +20,22 @@ public class RemoveServiceEndpoint : Endpoint<RemoveServiceRequest, RemoveServic
     public override async Task HandleAsync(RemoveServiceRequest req, CancellationToken ct)
     {
         int? id = Route<int>("id", isRequired: true);
-        var service = OSService.GetServiceById(id.Value);
-        if (service == null)
+        OfferedService? service = null;
+        try
+        {
+            service = OSService.GetServiceById(id.Value).GetAwaiter().GetResult();
+        }
+        catch (ResourceNotFoundException)
         {
             AddError("Service not found");
-            await SendErrorsAsync();
-        } else if (service?.Owner.Id != int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value))
+            await SendErrorsAsync(404);
+            
+        }
+
+        if (service!.Owner.Id != int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value))
         {
             AddError("You don't have permission to delete this service");
-            await SendErrorsAsync();
+            await SendErrorsAsync(403);
         }
         else
         {

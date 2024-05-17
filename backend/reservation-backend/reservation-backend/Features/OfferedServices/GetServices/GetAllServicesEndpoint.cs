@@ -18,7 +18,7 @@ public class GetAllServicesEndpoint : EndpointWithoutRequest<GetServicesResponse
     public override async Task HandleAsync(CancellationToken ct)
     {
         
-        Response.Services = OSService.GetAllServices().Select(s => new OfferedServiceDto(s)).ToList();
+        Response.Services = (await OSService.GetAllServices()).Select(s => new OfferedServiceDto(s)).ToList();
         await SendOkAsync(Response, ct);
     }
 }

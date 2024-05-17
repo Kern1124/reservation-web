@@ -1,5 +1,6 @@
 using FastEndpoints;
 using reservation_backend.Database;
+using reservation_backend.Exceptions;
 using reservation_backend.Features.OfferedServices.Validators;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
@@ -22,26 +23,33 @@ public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServic
 
     public override async Task HandleAsync(CreateServiceRequest req, CancellationToken ct)
     {
-        User? user = null;
-        user = UserService.GetUserById(int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value));
-        if (user == null)
+        User? user;
+        try
         {
-            AddError("User not found, incorrect claim");
+            user = await UserService.GetUserById(int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value));
+        } 
+        catch (ResourceNotFoundException)
+        {
+            AddError("User not found");
+            await SendErrorsAsync(404);
+            return;
+        }
+
+        var location = new Location(req.Location.Country, req.Location.City, req.Location.Address);
+        var service = new OfferedService(user!, req.Name, req.Description, location);
+        
+        try
+        {
+            await OSService.AddService(service);
+        }
+        catch (ResourceExistsException)
+        {
+            AddError("Failed to create the service, combination of country and name already exist.");
             await SendErrorsAsync();
             return;
         }
-        var location = new Location(req.Location.Country, req.Location.City, req.Location.Address);
-        var service = new OfferedService(user!, req.Name, req.Description, location);
-        if (OSService.AddService(service) == null)
-        {
-            AddError("Failed to create the service");
-            await SendErrorsAsync();
-        }
-        else
-        {
-            Response.Message = "Service created";
-            await SendOkAsync(ct); 
-        }
-        
+
+        Response.Message = "Service created";
+        await SendOkAsync(ct); 
     }
 }

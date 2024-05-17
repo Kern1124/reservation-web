@@ -1,6 +1,8 @@
 using FastEndpoints;
 using reservation_backend.Dto;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
+using reservation_backend.Models;
 
 namespace reservation_backend.Features.Users.GetUserReservations;
 
@@ -17,18 +19,20 @@ public class GetUserReservationsEndpoint : Endpoint<GetUserReservationsRequest, 
     }
     public override async Task HandleAsync(GetUserReservationsRequest req, CancellationToken ct)
     {
-        var user = UserService.GetUserById(req.Id);
-        if (user == null)
+        User user;
+        try
+        {
+            user = await UserService.GetUserById(req.Id);
+        }
+        catch (ResourceNotFoundException)
         {
             AddError("User not found");
-            await SendErrorsAsync();
+            await SendErrorsAsync(404);
+            return;
         }
-        else
-        {
-            Response.Reservations = UserService.GetUserReservations(user!.Id)
-                .Select(r => new ReservationDto(r, r.OfferedService))
-                .ToList();
-        }
-        
+
+        Response.Reservations = (await UserService.GetUserReservations(user!.Id))
+            .Select(r => new ReservationDto(r, r.OfferedService))
+            .ToList();
     }
 }

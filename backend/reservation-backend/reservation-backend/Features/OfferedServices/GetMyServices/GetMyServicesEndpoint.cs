@@ -21,7 +21,7 @@ public class GetMyServicesEndpoint : EndpointWithoutRequest<GetMyServicesRespons
     public override async Task HandleAsync(CancellationToken ct)
     {
         int ownerId = int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value);
-        Response.Services = OSService.GetServicesByOwnerId(ownerId)
+        Response.Services = (await OSService.GetServicesByOwnerId(ownerId))
             .Select(s => new OfferedServiceDto(s))
             .ToList();
         await SendOkAsync(Response, ct);

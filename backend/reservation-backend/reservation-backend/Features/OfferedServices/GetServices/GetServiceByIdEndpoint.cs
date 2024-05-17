@@ -1,4 +1,5 @@
 using FastEndpoints;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
 
@@ -18,17 +19,18 @@ public class GetServiceByIdEndpoint : EndpointWithoutRequest<GetServicesResponse
     public override async Task HandleAsync(CancellationToken ct)
     {
         int id = Route<int>("id");
-        OfferedService? service = OSService.GetServiceById(id);
-        if (service == null)
+        OfferedService service;
+        try
+        {
+            service = await OSService.GetServiceById(id);
+        }
+        catch (ResourceNotFoundException)
         {
             AddError("Service not found");
-            await SendErrorsAsync();
+            await SendErrorsAsync(404);
+            return;
         }
-        else
-        {
-            Response.Services = new List<OfferedServiceDto> {new (service)};
-            await SendOkAsync(Response, ct);
-        }
-        
+        Response.Services = [new(service)];
+        await SendOkAsync(Response, ct);
     }
 }

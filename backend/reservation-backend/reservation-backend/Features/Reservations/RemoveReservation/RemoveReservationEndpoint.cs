@@ -1,5 +1,7 @@
 using FastEndpoints;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
+using reservation_backend.Models;
 
 namespace reservation_backend.Features.Reservations.RemoveReservation;
 
@@ -16,9 +18,13 @@ public class RemoveReservationEndpoint : Endpoint<RemoveReservationRequest, Remo
     }
     public override async Task HandleAsync(RemoveReservationRequest req, CancellationToken ct)
     {
-        var reservation = ReservationService
-            .GetReservationById(req.Id);
-        if (reservation == null)
+        Reservation reservation;
+        try
+        {
+            reservation = await ReservationService
+                .GetReservationById(req.Id);
+        }
+        catch (ResourceNotFoundException)
         {
             AddError("Reservation not found");
             await SendErrorsAsync(404);

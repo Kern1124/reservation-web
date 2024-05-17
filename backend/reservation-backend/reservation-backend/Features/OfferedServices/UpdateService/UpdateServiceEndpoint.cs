@@ -1,4 +1,5 @@
 using FastEndpoints;
+using reservation_backend.Exceptions;
 using reservation_backend.Features.OfferedServices.Validators;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
@@ -20,16 +21,21 @@ public class UpdateServiceEndpoint : Endpoint<UpdateServiceRequest, UpdateServic
     public override async Task HandleAsync(UpdateServiceRequest req, CancellationToken ct)
     {
         int? id = Route<int>("id", isRequired: true);
-        var service = OSService.GetServiceById(id.Value);
-        if (service == null)
+        OfferedService? service = null;
+        try
+        {
+            service = await OSService.GetServiceById(id.Value);
+        }
+        catch (ResourceNotFoundException)
         {
             AddError("Service not found");
-            await SendErrorsAsync();
+            await SendErrorsAsync(404);
         }
-        else if (service?.Owner.Id != int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value))
+
+        if (service?.Owner.Id != int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value))
         {
             AddError("You don't have permission to update this service");
-            await SendErrorsAsync();
+            await SendErrorsAsync(403);
         }
         else
         {

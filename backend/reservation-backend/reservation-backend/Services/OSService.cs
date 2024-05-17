@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using reservation_backend.Database;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
 using reservation_backend.Models;
 using Serilog.Core;
@@ -25,38 +26,45 @@ public class OSService : IOSService
         return new TimeSlotStateDto(timeSlot.Start, timeSlot.End, available, null);
     }
     
-    public List<OfferedService> GetAllServices()
+    public async Task<List<OfferedService>> GetAllServices()
     {
-        return _databaseContext.OfferedServices
+        return await _databaseContext.OfferedServices
             .Include(s => s.Owner)
             .Include(s => s.Location)
-            .ToList();
-    }
-    
-    public OfferedService? GetServiceById(int id)
-    {
-        return _databaseContext.OfferedServices
-            .Include(s=> s.Owner)
-            .Include(s => s.Location)
-            .FirstOrDefault(s => s.Id == id);
+            .ToListAsync();
     }
 
-    public OfferedService? AddService(OfferedService service)
+    public async Task<OfferedService> GetServiceById(int id)
+    {
+        try
+        {
+            return await _databaseContext.OfferedServices
+                .Include(s => s.Owner)
+                .Include(s => s.Location)
+                .FirstAsync(s => s.Id == id);
+        }
+        catch (Exception)
+        {
+            throw new ResourceNotFoundException($"Service with id: '{id}' not found.");
+        }
+    }
+
+    public async Task<OfferedService> AddService(OfferedService service)
     {
         OfferedService? result;
         try
         {
             result = _databaseContext.OfferedServices.Add(service).Entity;
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
         catch (Exception e)
         {
-            result = null;
+            throw new ResourceExistsException("Service with this name and country already exists");
         }
         return result;
     }
 
-    public bool UpdateService(OfferedService service, (string? name, string? desc) newServiceDetails)
+    public async void UpdateService(OfferedService service, (string? name, string? desc) newServiceDetails)
     {
         OfferedService entity;
         try
@@ -65,56 +73,67 @@ public class OSService : IOSService
         }
         catch (Exception)
         {
-            return false;
+            throw new ResourceUpdateFailedException($"Service with id: '{service.Id}' not found.");
         }
+
         if (newServiceDetails.name != null)
         {
             entity.Name = newServiceDetails.name;
         }
+
         if (newServiceDetails.desc != null)
         {
             entity.Description = newServiceDetails.desc;
         }
-        _databaseContext.SaveChanges();
-        return true;
+
+        await _databaseContext.SaveChangesAsync();
     }
-    public bool DeleteService(int id)
+
+    public async void DeleteService(int id)
     {
         OfferedService? foundService;
-        if (null == (foundService = _databaseContext.OfferedServices.FirstOrDefault(s => s.Id == id)))
+        try
         {
-            return false;
+            foundService = await _databaseContext.OfferedServices
+                .FirstAsync(s => s.Id == id);
+        }
+        catch (Exception)
+        {
+            throw new ResourceNotFoundException($"Service with id: '{id}' not found.");
         }
         _databaseContext.OfferedServices.Remove(foundService);
-        _databaseContext.SaveChanges();
-        return true;
+        await _databaseContext.SaveChangesAsync();
     }
     
-    public List<TimeSlotStateDto>? GetTimeSlotsByServiceIdAndDate(int id, DateTime date)
+    public async Task<List<TimeSlotStateDto>> GetTimeSlotsByServiceIdAndDate(int id, DateTime date)
     {
         List<TimeSlotStateDto>? result;
         try
         {
-            var existingReservations = _databaseContext.Reservations
+            var existingReservations = await _databaseContext.Reservations
                 .Where(r => r.OfferedService.Id == id && r.DateStart.Date == date.Date)
+                .ToListAsync();
+            var service = await _databaseContext.OfferedServices
+                .FirstOrDefaultAsync(s => s.Id == id);
+            // We want to throw if service doesn't exist. Therefore we do not use the nullable operator.
+            // The warning on TimeSlots is false.
+            result = service!.TimeSlots
+                .Select(t => CheckAvailabilityAndReturnState(id, date, t, existingReservations))
                 .ToList();
-            result = _databaseContext.OfferedServices
-                .Include(s => s.TimeSlots)
-                .SelectMany(s => s.TimeSlots)
-                .Select(t => CheckAvailabilityAndReturnState(id, date, t, existingReservations)).ToList();
+            Console.WriteLine(result.Count);
         }
         catch (Exception)
         {
-            result = null;
+            throw new ResourceNotFoundException($"Service with id: '{id}' not found.");
         }
         return result;
     }
     
-    public List<OfferedService> GetServicesByOwnerId(int id)
+    public async Task<List<OfferedService>> GetServicesByOwnerId(int id)
     {
-        var result = _databaseContext.OfferedServices
+        var result = await _databaseContext.OfferedServices
             .Include(s => s.Owner)
-            .Where(s => s.Owner.Id == id).Include(s=> s.Location).ToList();
+            .Where(s => s.Owner.Id == id).Include(s=> s.Location).ToListAsync();
         return result;
 
     }

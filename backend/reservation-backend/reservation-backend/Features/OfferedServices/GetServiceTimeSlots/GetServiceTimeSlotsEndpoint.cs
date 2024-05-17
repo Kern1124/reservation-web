@@ -1,11 +1,13 @@
 using FastEndpoints;
+using reservation_backend.Exceptions;
 using reservation_backend.Interfaces;
+using reservation_backend.Models;
 
 namespace reservation_backend.Features.OfferedServices.GetServiceTimeSlots;
 
 public class GetServiceTimeSlotsEndpoint : Endpoint<TimeSlotRequest, TimeSlotResponse>
 {
-    public IOSService _osService { get; set; }
+    public IOSService OSService { get; set; }
     public override void Configure()
     {
         Get("/api/services/{serviceId}/time-slots/{date}");
@@ -15,15 +17,17 @@ public class GetServiceTimeSlotsEndpoint : Endpoint<TimeSlotRequest, TimeSlotRes
 
     public override async Task HandleAsync(TimeSlotRequest req, CancellationToken ct)
     {
-        var service = _osService.GetServiceById(req.ServiceId);
-        if (service == null)
+        try
         {
-            await SendNotFoundAsync(ct);
+            Response.TimeSlots = await OSService.GetTimeSlotsByServiceIdAndDate(req.ServiceId, req.Date);
         }
-        else
+        catch (ResourceNotFoundException)
         {
-            Response.TimeSlots = _osService.GetTimeSlotsByServiceIdAndDate(req.ServiceId, req.Date);
-            await SendOkAsync(Response, ct);
+            AddError("Service not found");
+            await SendErrorsAsync(404);
+            return;
         }
+        await SendOkAsync(Response, ct);
+        
     }
 }
