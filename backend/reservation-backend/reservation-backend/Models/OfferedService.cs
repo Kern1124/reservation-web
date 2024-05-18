@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using FastEndpoints;
 using reservation_backend.Users;
 
 namespace reservation_backend.Models;

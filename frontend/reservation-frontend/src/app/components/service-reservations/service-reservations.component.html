@@ -1,0 +1,16 @@
+<mat-card>
+    <h3 mat-card-title>Reservations - {{data.name}}</h3>
+    <mat-selection-list [(ngModel)]="selected" (ngModelChange)="onNgModelChange($event)" #selectedReservations>
+        <mat-list-option [value]="reservation" *ngFor="let reservation of serviceReservations">
+            <div matListItemTitle>Reservation ({{reservation.id}}): {{reservation.dateStart.split("T")[0]}} - ({{reservation.timeSlot}})</div>
+            <div matListItemLine>
+                User: {{reservation.user?.username}} ({{reservation.user?.mailAddress}})
+            </div>
+            <div matListItemIcon><mat-icon>bookmark</mat-icon></div>
+        </mat-list-option>
+        <button mat-button class="list-item-button">Send message</button>
+    </mat-selection-list>
+    <div class="button-container">
+        <button mat-button (click)="cancelSelectedReservations()">Cancel selected ({{selectedReservations.selectedOptions.selected.length}})</button>
+    </div>
+</mat-card>

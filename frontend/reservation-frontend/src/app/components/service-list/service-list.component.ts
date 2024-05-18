@@ -5,6 +5,8 @@ import { ServiceDetailComponent } from '../service-detail/service-detail.compone
 import { MatDialog } from '@angular/material/dialog';
 import { GridColsDirective } from 'src/app/utils/gridresize-directive';
 import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material/paginator';
 @Component({
   selector: 'app-service-list',
   templateUrl: './service-list.component.html',
@@ -13,10 +15,21 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 
 export class ServiceListComponent{
-  services: OfferedService[];
-  constructor(public dialog: MatDialog, public authService: AuthService, private offeredServicesService: OfferedServicesService) {
+  lowValue: number = 0;
+  highValue: number = 20;  
+  fetchedServices: OfferedService[];
+  showcasedServices: OfferedService[];
+  constructor(
+    public router: Router, 
+    public dialog: MatDialog, 
+    public authService: AuthService, 
+    private offeredServicesService: OfferedServicesService
+  ) {
     offeredServicesService.getServices().subscribe(
-      v => {this.services = v.services;}
+      v => {
+        this.fetchedServices = v.services;
+        this.showcasedServices = v.services;
+      }
     )
   }
 
@@ -30,6 +43,19 @@ export class ServiceListComponent{
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+    
   }
+
+  public getPaginatorData(event: PageEvent): PageEvent {
+    this.lowValue = event.pageIndex * event.pageSize;
+    this.highValue = this.lowValue + event.pageSize;
+    return event;
+  }
+
+  public search(input:string): OfferedService[]{
+    console.log(this.fetchedServices.filter(s => s.name.toLowerCase().includes(input)))
+    return this.showcasedServices = this.fetchedServices.filter(s => s.name.toLowerCase().includes(input.toLowerCase()))
+  }
+  
 }
 

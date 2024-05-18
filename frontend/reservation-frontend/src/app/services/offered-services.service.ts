@@ -35,7 +35,11 @@ export class OfferedServicesService {
     return this.api.put(`${env.apiUrl}/services/update/${id}`, {name: newName, description: newDescription})
   }
 
-  public createUserReservation = (serviceId: number, dateStart: string, dateEnd: string): Observable<any> => {
-    return this.api.post(`${env.apiUrl}/reservations/`, {serviceId: serviceId, dateStart: dateStart, dateEnd: dateEnd})
+  public createUserReservation = (id: number, dateStart: string, dateEnd: string): Observable<any> => {
+    return this.api.post(`${env.apiUrl}/reservations/`, {serviceId: id, dateStart: dateStart, dateEnd: dateEnd})
+  }
+
+  public getServiceReservations = (id: number): Observable<any> => {
+    return this.api.get(`${env.apiUrl}/services/${id}/reservations/`)
   }
 }

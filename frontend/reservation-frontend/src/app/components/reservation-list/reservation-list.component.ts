@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReservationsService } from 'src/app/services/reservations.service';
 import { ReservationDto } from 'src/types';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-reservation-list',
   templateUrl: './reservation-list.component.html',
@@ -13,6 +14,7 @@ export class ReservationListComponent implements OnInit {
   reservations: ReservationDto[];
 
   constructor(
+    private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private reservationsService: ReservationsService) {}
 
@@ -34,7 +36,10 @@ export class ReservationListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed){
         this.reservationsService.removeReservation(reservation.id).subscribe({
-          next: () => this.reservationsService.getMyReservations().subscribe( v => this.reservations = v.reservations),
+          next: () => this.reservationsService.getMyReservations().subscribe( v => {
+            this.snackBar.open("Reservation successfully removed.", "Dismiss", {duration: 3000})
+            this.reservations = v.reservations
+          }),
         })
       }
     })

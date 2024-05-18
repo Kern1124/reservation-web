@@ -9,6 +9,8 @@ import { WhenDirtyStateMatcher } from 'src/app/utils/error-state-matcher';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LocationService } from 'src/app/services/location.service';
+import { ServiceReservationsComponent } from '../service-reservations/service-reservations.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-service-manager',
   templateUrl: './service-manager.component.html',
@@ -35,6 +37,7 @@ export class ServiceManagerComponent implements OnInit {
   editFailedMessage: string;
 
   constructor(
+    private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private OSService: OfferedServicesService,
     private locationService: LocationService
@@ -84,6 +87,15 @@ export class ServiceManagerComponent implements OnInit {
     })
   }
 
+  openReservations(service: OfferedService): void {
+    this.creationFailed = false
+    this.editFailed = false;
+    let dialogRef = this.dialog.open(ServiceReservationsComponent, {
+      width: '75%', 
+      height: '75%',
+      data: service})
+  }
+
   removeService(service: OfferedService): void {
     this.creationFailed = false
     this.editFailed = false;
@@ -91,7 +103,7 @@ export class ServiceManagerComponent implements OnInit {
       width: '35%',
       height: '35%',
       data: {
-        message: "Are you sure you want to remove this service?", 
+        ser: "Are you sure you want to remove this service?", 
       }
     })
     dialogRef.afterClosed().subscribe(confirmed => {
@@ -137,6 +149,7 @@ export class ServiceManagerComponent implements OnInit {
             let error: ProblemDetails = e.error
             this.creationFailed = true
             this.creationFailedMessage = error.errors[0].reason
+            this.snackBar.open(this.creationFailedMessage, "Dismiss", {duration: 3000})
           }
         }
         )}

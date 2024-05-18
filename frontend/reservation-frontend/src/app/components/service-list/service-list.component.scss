@@ -1,15 +1,44 @@
 .services-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1em;
-    padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1em;
+  padding: 16px;
 }
 
 .service-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1em;
 }
 
-  
+.service-new {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.service-new * {
+  height: 100%;
+  width: 100%;
+  font-size: 3em;
+  font-weight: 100;
+  color: gray;
+  opacity: 70%;
+  padding: 1em;
+}
+
+.services-paginator {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom:0;
+  width: 100%;
+}
+
+.divider {
+    margin-left: 0;
+}
+
+header {
+    padding: 1em;
+}

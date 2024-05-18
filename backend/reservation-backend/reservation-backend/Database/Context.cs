@@ -19,27 +19,28 @@ public class Context : DbContext
         Database.EnsureCreated();
         if (!Countries.Any())
         {
-            var transaction = Database.BeginTransaction();
-            var settings = new JsonSerializerSettings
+            using (var transaction = Database.BeginTransaction())
             {
-                MissingMemberHandling = MissingMemberHandling.Error,
-                Error = (sender, eventArgs) => {
-                    Console.WriteLine(eventArgs.ErrorContext.Error.Message); 
-                    eventArgs.ErrorContext.Handled = true;
-                }
-            };
-            var countries = JsonConvert
-                .DeserializeObject<CountriesDto>(File
-                    .ReadAllText("Data/countries.json"), settings)!.Data.Select(c => new Country(c));
-            Countries.AddRange(countries);
-            transaction.Commit();
-            SaveChanges();
+                var settings = new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Error,
+                    Error = (sender, eventArgs) => {
+                        Console.WriteLine(eventArgs.ErrorContext.Error.Message); 
+                        eventArgs.ErrorContext.Handled = true;
+                    }
+                };
+                var countries = JsonConvert
+                    .DeserializeObject<CountriesDto>(File
+                        .ReadAllText("Data/countries.json"), settings)!.Data.Select(c => new Country(c));
+                Countries.AddRange(countries);
+                transaction.Commit(); 
+                SaveChanges();
+            }
         }
-        
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<OfferedService>().HasMany(i => i.TimeSlots).WithOne(); // will be fixed, currently isnt designed as intended
+        modelBuilder.Entity<OfferedService>().HasMany(i => i.TimeSlots).WithOne();
         modelBuilder.Entity<OfferedService>().HasOne(i => i.Location);
     }
     

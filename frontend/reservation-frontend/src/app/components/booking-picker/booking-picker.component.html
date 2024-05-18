@@ -9,11 +9,12 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
     <mat-list>
-      <mat-list-item *ngFor="let term of bookingTerms" (click)="bookTerm(term)" [ngClass]="{'booked': !term.available}">
+      <mat-list-item *ngFor="let term of bookingTerms" (click)="bookTerm(term)" [ngClass]="{'booked': !term.available || term.blocked}">
         <div>
           <h4 matListItemTitle>{{ term.timeSlot }}</h4>
-          <span matListItemLine *ngIf="term.available">Click to book</span>
-          <span matListItemLine *ngIf="!term.available">Booked</span>
+          <span matListItemLine *ngIf="term.available && !term.blocked">Click to book</span>
+          <span matListItemLine *ngIf="!term.available && !term.blocked">Booked</span>
+          <span matListItemLine *ngIf="term.blocked">Unavailable</span>
         </div>
       </mat-list-item>
     </mat-list>

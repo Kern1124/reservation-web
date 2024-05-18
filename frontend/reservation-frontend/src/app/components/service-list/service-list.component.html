@@ -1,15 +1,37 @@
+<header>
+  <form>
+    <mat-form-field >
+      <mat-label>Search by name</mat-label>
+      <input #searchInput (input)="search(searchInput.value)" class="header-search" matInput type="search">
+    </mat-form-field>
+  </form>
+<mat-divider class="divider"></mat-divider>
+</header>
 <div class="services-container">
-  <mat-card *ngFor="let service of services" class="service-card">
+  <mat-card *ngFor="let service of (showcasedServices && showcasedServices.slice(lowValue, highValue) ) "
+    class="service-card">
     <mat-card-title>{{service.name}}</mat-card-title>
-    <mat-card-subtitle>{{service.location.country}} - {{service.location.city}} </mat-card-subtitle>
-    <mat-card-subtitle>{{service.location.city}} ({{service.location.address}})</mat-card-subtitle>
-    <img src="https://material.angular.io/assets/img/examples/shiba2.jpg"/>
+    <mat-card-subtitle>{{service.location.country}} - {{service.location.city}}
+    </mat-card-subtitle>
+    <mat-card-subtitle>{{service.location.city}}
+      ({{service.location.address}})</mat-card-subtitle>
+    <img src="https://material.angular.io/assets/img/examples/shiba2.jpg" />
     <mat-card-actions>
-      <button *ngIf="(authService.isAuthenticatedFn())" mat-raised-button (click)="openDialog(service)">Book</button>
+      <button *ngIf="(authService.isAuthenticatedFn())" mat-raised-button
+        (click)="openDialog(service)">Book</button>
     </mat-card-actions>
   </mat-card>
+  <mat-card class="service-new" *ngIf="authService.isAuthenticatedFn()">
+    <button mat-button (click)="router.navigate(['manage-services'])">+</button>
+  </mat-card>
 </div>
-  
+<footer class="services-paginator">
+  <mat-paginator [length]="showcasedServices && showcasedServices.length" pageSize=12
+    (page)="getPaginatorData($event)" [pageSizeOptions]="[12, 24, 48]"
+    showFirstLastButtons="false">
+  </mat-paginator>
+</footer>
+
 <!-- <div class="service-list-container">
     <div class="service-list">
         <div *ngFor="let service of services" class="service-container">

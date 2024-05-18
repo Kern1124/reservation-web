@@ -42,9 +42,9 @@ public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServic
         {
             await OSService.AddService(service);
         }
-        catch (ResourceExistsException)
+        catch (ResourceExistsException e)
         {
-            AddError("Failed to create the service, combination of country and name already exist.");
+            AddError($"{e.Message}");
             await SendErrorsAsync();
             return;
         }

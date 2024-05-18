@@ -2,8 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {Component} from '@angular/core';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { WhenDirtyStateMatcher } from 'src/app/utils/error-state-matcher';
 import { ProblemDetails } from 'src/types';
 
 @Component({
@@ -17,6 +19,7 @@ export class RegisterComponent {
   failedMessage: string;
   submitted: boolean = false;
   registerMessage: string;
+  errorStateMatcher: WhenDirtyStateMatcher = new WhenDirtyStateMatcher();
   constructor(private authService: AuthService, private router: Router){
 
   }

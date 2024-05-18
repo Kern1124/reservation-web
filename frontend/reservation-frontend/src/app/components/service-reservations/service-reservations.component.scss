@@ -1,0 +1,23 @@
+
+mat-selection-list {
+    height: 100%;
+    overflow: scroll;
+
+}
+
+mat-list-option {
+    display: flex;
+}
+
+
+mat-card {
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    height: 100%;
+    width: 100%;
+}
+
+.list-item-button {
+    display: none;
+}

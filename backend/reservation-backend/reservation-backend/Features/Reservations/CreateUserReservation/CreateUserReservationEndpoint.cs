@@ -22,6 +22,12 @@ public class CreateUserReservationEndpoint : Endpoint<CreateUserReservationReque
     public override async Task HandleAsync(CreateUserReservationRequest req, CancellationToken ct)
     {
         int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value);
+        if (req.DateStart >= req.DateEnd || req.DateStart < DateTime.Now)
+        {
+            AddError("Invalid date");
+            await SendErrorsAsync();
+            return;
+        }
         try
         {
             await ReservationService.CreateUserReservation(userId, req.ServiceId, req.DateStart, req.DateEnd);

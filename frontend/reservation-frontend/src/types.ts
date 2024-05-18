@@ -70,6 +70,7 @@ export interface TimeSlotStateDto{
     end: string,
     available: boolean,
     reservedById: number
+    blocked: boolean
 }
 export interface TimeSlotDto{
     start: string,
@@ -102,10 +103,11 @@ export interface ReservationListResponse {
 }
 export interface ReservationDto {
     id: number,
-    service: OfferedService,
+    service?: OfferedService,
     dateStart: string,
     dateEnd: string,
     timeSlot: string
+    user?: UserDto
 }
 
 export interface LocationDto {

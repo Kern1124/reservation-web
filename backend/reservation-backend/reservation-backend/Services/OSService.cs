@@ -23,7 +23,8 @@ public class OSService : IOSService
         var ptEnd = DateTime.ParseExact(timeSlot.End, format, CultureInfo.CurrentCulture).TimeOfDay;
         bool available = !existingReservations.Any(r => ptStart.TotalSeconds <= r.DateEnd.TimeOfDay.TotalSeconds &&
                                                         r.DateStart.TimeOfDay.TotalSeconds <= ptEnd.TotalSeconds);
-        return new TimeSlotStateDto(timeSlot.Start, timeSlot.End, available, null);
+        bool blocked = date.Date.AddHours(ptStart.Hours).AddMinutes(ptStart.Minutes) < DateTime.Now;
+        return new TimeSlotStateDto(timeSlot.Start, timeSlot.End, available, null, blocked);
     }
     
     public async Task<List<OfferedService>> GetAllServices()
@@ -54,6 +55,12 @@ public class OSService : IOSService
         OfferedService? result;
         try
         {
+            if (_databaseContext.OfferedServices
+                .Include(s => s.Location)
+                .Any(s => s.Name == service.Name && s.Location.Country == service.Location.Country))
+            {
+                throw new ResourceExistsException("Service with this name and country already exists");
+            }
             result = _databaseContext.OfferedServices.Add(service).Entity;
             await _databaseContext.SaveChangesAsync();
         }
@@ -75,9 +82,15 @@ public class OSService : IOSService
         {
             throw new ResourceUpdateFailedException($"Service with id: '{service.Id}' not found.");
         }
-
+        
         if (newServiceDetails.name != null)
         {
+            if (_databaseContext.OfferedServices
+                .Include(s => s.Location)
+                .Any(s => s.Name == newServiceDetails.name && s.Location.Country == service.Location.Country))
+            {
+                throw new ResourceExistsException("Service with this name and country already exists");
+            }
             entity.Name = newServiceDetails.name;
         }
 
@@ -136,5 +149,15 @@ public class OSService : IOSService
             .Where(s => s.Owner.Id == id).Include(s=> s.Location).ToListAsync();
         return result;
 
+    }
+    
+    public async Task<List<Reservation>> GetServiceReservations(int id)
+    {
+        var result = await _databaseContext.Reservations
+            .Include(r => r.OfferedService)
+            .Include(r => r.User)
+            .Where(r => r.OfferedService.Id == id)
+            .ToListAsync();
+        return result;
     }
 }

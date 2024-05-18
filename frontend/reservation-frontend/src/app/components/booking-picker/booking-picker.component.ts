@@ -5,6 +5,7 @@ import { formatISO, getDate, getDay } from 'date-fns';
 import { OfferedServicesService } from 'src/app/services/offered-services.service';
 import { OfferedService, TimeSlotStateDto } from 'src/types';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-booking-picker',
   templateUrl: './booking-picker.component.html',
@@ -16,7 +17,7 @@ export class BookingPickerComponent implements OnInit {
   bookingTerms: TimeSlotStateDto[];
   minDate: Date = new Date()
   maxDate: Date = new Date(new Date().getFullYear() + 1, 12, 31)
-  constructor(public dialog: MatDialog, private OSService: OfferedServicesService) { }
+  constructor(private snackBar: MatSnackBar, public dialog: MatDialog, private OSService: OfferedServicesService) { }
 
   ngOnInit(): void {
     this.fetchBookingTerms();
@@ -35,7 +36,7 @@ export class BookingPickerComponent implements OnInit {
     let splitDate = formatISO(this.selectedDate).split('T')
     let startDate: string = splitDate.at(0) + "T" + term.start
     let endDate: string = splitDate.at(0) + "T" + term.end
-    if (term.available) {
+    if (term.available && !term.blocked) {
       let dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '35%',
         height: '35%',
@@ -46,7 +47,10 @@ export class BookingPickerComponent implements OnInit {
       dialogRef.afterClosed().subscribe(confirmed => {
         if (confirmed){
           this.OSService.createUserReservation(this.service.id, startDate, endDate).subscribe({
-            next: () => this.fetchBookingTerms()
+            next: () => {
+              this.snackBar.open("Service successfully booked.", "Dismiss", {duration: 3000})
+              this.fetchBookingTerms()
+            }
           })
         }
       })

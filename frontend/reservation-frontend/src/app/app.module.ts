@@ -30,6 +30,7 @@ import { ServiceManagementModalComponent } from './components/service-management
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ReservationListComponent } from './components/reservation-list/reservation-list.component';
 import { MatSelectModule } from '@angular/material/select';
+import { ServiceReservationsComponent } from './components/service-reservations/service-reservations.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { MatSelectModule } from '@angular/material/select';
     ConfirmDialogComponent,
     ServiceManagerComponent,
     ServiceManagementModalComponent,
-    ReservationListComponent
+    ReservationListComponent,
+    ServiceReservationsComponent
   ],
   imports: [
     BrowserModule,
