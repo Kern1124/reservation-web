@@ -10,6 +10,7 @@ Reservation system seemed like a pretty interesting and fitting topic for a webs
  <ul>
    <li>Typescript - Angular</li>
  </ul>
+ 
 **Backend**
 <ul>
   <li>C# - ASP.NET</li>
