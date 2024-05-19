@@ -75,6 +75,5 @@ If the project were to be run in some sort of production, it would require at le
  <li>Use the Angular CLI to serve the frontend by running ng serve.</li>
  <li>Access the application through localhost on the port specified by the Angular CLI or config files.</li>
 </ol>
-**Local deployment**
 
 
