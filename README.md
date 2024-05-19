@@ -43,3 +43,38 @@ If the project were to be run in some sort of production, it would require at le
   <li>.NET 8.0+ SDK</li>
 </ul>
 
+
+## Deployment
+
+**Backend**
+<ol>
+ <li>Build C# backend using IDE or the dotnet CLI.</li>
+ <li>Publish the backend to a folder using the Publish feature in Visual Studio or the dotnet publish command.</li>
+</ol>
+
+**Frontend**
+<ol>
+ <li>Build the Angular application by running ng build --prod in the terminal.</li>
+ <li>The build process creates a dist/ folder containing the production-ready frontend.</li>
+</ol>
+
+## Deploy remotely
+
+<ol>
+ <li>Set up IIS, Apache, Nginx, or any other web server of your choice.</li>
+ <li>Configure the server to point to the backend publish folder.</li>
+ <li>Ensure the backend can serve the Angular application by setting up the correct routes.</li>
+ <li>Upload both the backend and frontend files to your server.</li>
+</ol>
+
+## Deploy locally
+
+<ol>
+ <li>Build and run your C# backend locally using IDE or the dotnet run command.</li>
+ <li>Build the Angular application for a development environment using ng build.</li>
+ <li>Use the Angular CLI to serve the frontend by running ng serve.</li>
+ <li>Access the application through localhost on the port specified by the Angular CLI or config files.</li>
+</ol>
+**Local deployment**
+
+
