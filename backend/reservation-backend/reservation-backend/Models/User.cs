@@ -13,6 +13,7 @@ public class User
     public byte[] PasswordSalt { get; set; }
     public List<Reservation> Reservations { get; set; }
     public List<OfferedService> OwnedServices { get; set; }
+    public List<Notification> Notifications { get; set; }
     public User(string username, string mailAddress)
     {   
         Username = username;

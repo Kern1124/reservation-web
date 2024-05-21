@@ -10,6 +10,7 @@ public class AuthenticatedEndpoint : EndpointWithoutRequest<AuthenticatedRespons
     public override void Configure()
     {
         Get("/api/users/authenticated");
+        Roles("logged-user");
         Options(x => x.WithTags("Users"));
     }
 

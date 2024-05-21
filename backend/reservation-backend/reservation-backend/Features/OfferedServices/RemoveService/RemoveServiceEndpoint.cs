@@ -23,7 +23,7 @@ public class RemoveServiceEndpoint : Endpoint<RemoveServiceRequest, RemoveServic
         OfferedService? service = null;
         try
         {
-            service = OSService.GetServiceById(id.Value).GetAwaiter().GetResult();
+            service = await OSService.GetServiceById(id.Value);
         }
         catch (ResourceNotFoundException)
         {

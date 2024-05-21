@@ -124,3 +124,15 @@ export interface CountryDto{
 export interface GetCountriesResponse {
     countries: CountryDto[]
 }
+
+export interface NotificationDto {
+    subject: string,
+    content: string,
+    timestamp: string,
+    isRead: boolean,
+    id: number
+}
+
+export interface GetMyNotificationsResponse {
+    notifications: NotificationDto[]
+}

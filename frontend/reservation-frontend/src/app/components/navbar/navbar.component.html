@@ -8,6 +8,20 @@
         (click)="router.navigate(['home'])"><mat-icon>home</mat-icon>Home</button>
     </mat-nav-list>
     <mat-nav-list class="navbar-right">
+      <button mat-button
+        *ngIf="authService.isAuthenticatedFn()" class="navbar-item" [matMenuTriggerFor]="notificationMenu">
+        <mat-icon>inbox</mat-icon>Notifications ({{notifications.length}})
+        <mat-menu class="navbar-notifications-menu" #notificationMenu>
+            <button *ngIf="notifications && notifications.length != 0" class="notifications-read-all" (click)="setAllAsRead()" mat-raised-button color="primary">Read all</button>
+            <mat-divider></mat-divider>
+            <div class="navbar-notification" (click)="setAsRead(notification)" *ngFor="let notification of (notifications)">
+              <div class="notification-date">[{{notification.timestamp}}]</div>
+              <div class="notification-subject">[{{notification.subject}}]: </div>
+              <div class="notification-content">{{notification.content}}</div>
+              <mat-divider></mat-divider>
+            </div>
+        </mat-menu>
+      </button>
       <button mat-button (click)="router.navigate(['manage-reservations'])"
         *ngIf="authService.isAuthenticatedFn()" class="navbar-item">
         <mat-icon>calendar_month</mat-icon>Manage reservations

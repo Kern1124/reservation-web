@@ -48,6 +48,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOSService, OSService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
 
 var app = builder.Build();
 

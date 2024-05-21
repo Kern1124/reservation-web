@@ -27,3 +27,29 @@ mat-nav-list.list-horizontal {
 .navbar-title {
     cursor: default;
 }
+
+.navbar-notification {
+    font-size: small;
+    padding: 0.3em;
+    max-width: 400px;
+    text-wrap: wrap;
+    margin: 0;
+}
+.notifications-read-all{
+    margin: 0.5em;
+}
+.navbar-notification:hover {
+    background-color: rgb(211, 211, 211);
+    cursor: pointer;
+}
+
+.notification-subject, .notification-date {
+    margin-top: -0.5em;
+    font-weight:bold;
+}
+
+
+::ng-deep .mat-menu-content{
+    max-height: 300px; 
+    overflow: scroll;
+  }

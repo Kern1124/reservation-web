@@ -13,6 +13,7 @@ public class Context : DbContext
     public virtual DbSet<OfferedService> OfferedServices { get; set; }
     public virtual DbSet<Country> Countries { get; set; }
     public virtual DbSet<City> Cities { get; set; }
+    public virtual DbSet<Notification> Notifications { get; set; }
     public Context(){}
     public Context(DbContextOptions<Context> options) : base(options)
     {
@@ -42,6 +43,7 @@ public class Context : DbContext
     {
         modelBuilder.Entity<OfferedService>().HasMany(i => i.TimeSlots).WithOne();
         modelBuilder.Entity<OfferedService>().HasOne(i => i.Location);
+        modelBuilder.Entity<User>().HasMany(i => i.Notifications).WithOne(m => m.Recipient);
     }
     
 }

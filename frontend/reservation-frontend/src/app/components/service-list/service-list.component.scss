@@ -10,6 +10,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 1em;
+  overflow: hidden;
 }
 
 .service-new {
@@ -30,8 +31,6 @@
 .services-paginator {
   display: flex;
   justify-content: center;
-  position: absolute;
-  bottom:0;
   width: 100%;
 }
 

@@ -8,8 +8,7 @@ namespace reservation_backend.Features.Reservations.CreateUserReservation;
 
 public class CreateUserReservationEndpoint : Endpoint<CreateUserReservationRequest, CreateUserReservationResponse>
 {
-    public IUserService UserService { get; set; }
-    public IOSService OSService { get; set; }
+    public INotificationService NotificationService { get; set; }
     public IReservationService ReservationService { get; set; }
 
 
@@ -22,6 +21,7 @@ public class CreateUserReservationEndpoint : Endpoint<CreateUserReservationReque
     public override async Task HandleAsync(CreateUserReservationRequest req, CancellationToken ct)
     {
         int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value);
+        Reservation res;
         if (req.DateStart >= req.DateEnd || req.DateStart < DateTime.Now)
         {
             AddError("Invalid date");
@@ -30,7 +30,7 @@ public class CreateUserReservationEndpoint : Endpoint<CreateUserReservationReque
         }
         try
         {
-            await ReservationService.CreateUserReservation(userId, req.ServiceId, req.DateStart, req.DateEnd);
+            res = await ReservationService.CreateUserReservation(userId, req.ServiceId, req.DateStart, req.DateEnd);
         }
         catch (ResourceNotFoundException)
         {
@@ -44,6 +44,9 @@ public class CreateUserReservationEndpoint : Endpoint<CreateUserReservationReque
             await SendErrorsAsync();
             return;
         }
+        await NotificationService.SendNotification(userId,
+            $"Reservation - {res.OfferedService.Name}",
+            $"You have got a new reservation by user {res.User.Username}");
         Response.Message = "Successfully created reservation";
     }
 }

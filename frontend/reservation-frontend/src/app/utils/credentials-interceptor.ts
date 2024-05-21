@@ -7,7 +7,7 @@ import { Router } from "@angular/router";
 
 export function credentialsInterceptor (
     req: HttpRequest<unknown>, 
-    next: HttpHandlerFn
+    next: HttpHandlerFn,
 ): Observable<HttpEvent<unknown>> {
     const updatedReq = req.clone(
         {withCredentials: true}
