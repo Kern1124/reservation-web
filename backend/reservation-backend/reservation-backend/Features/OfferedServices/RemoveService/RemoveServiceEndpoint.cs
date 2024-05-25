@@ -29,7 +29,8 @@ public class RemoveServiceEndpoint : Endpoint<RemoveServiceRequest, RemoveServic
         {
             AddError("Service not found");
             await SendErrorsAsync(404);
-            
+            return;
+
         }
 
         if (service!.Owner.Id != int.Parse(HttpContext.User.Claims.First(c => c.Type == "id").Value))
@@ -39,7 +40,7 @@ public class RemoveServiceEndpoint : Endpoint<RemoveServiceRequest, RemoveServic
         }
         else
         {
-            OSService.DeleteService(id.Value);
+            await OSService.DeleteService(id.Value);
             await SendOkAsync(ct);
         }
     }

@@ -40,7 +40,7 @@ public class UpdateServiceEndpoint : Endpoint<UpdateServiceRequest, UpdateServic
         else
         {
             var newServiceDetails = (req.Name, req.Description);
-            OSService.UpdateService(service!, newServiceDetails);
+            await OSService.UpdateService(service!, newServiceDetails);
             await SendOkAsync(ct);
         }
     }

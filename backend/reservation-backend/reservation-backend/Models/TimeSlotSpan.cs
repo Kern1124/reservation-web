@@ -11,4 +11,10 @@ public class TimeSlotSpan
         Start = start;
         End = end;
     }
+
+    public TimeSlotSpan(TimeSlotDto dto)
+    {
+        Start = dto.Start;
+        End = dto.End;
+    }
 }

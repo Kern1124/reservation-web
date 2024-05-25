@@ -1,5 +1,4 @@
 using FastEndpoints;
-using reservation_backend.Database;
 using reservation_backend.Exceptions;
 using reservation_backend.Features.OfferedServices.Validators;
 using reservation_backend.Interfaces;
@@ -35,8 +34,17 @@ public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServic
             return;
         }
 
+        if (req.TimeSlots.Count == 0)
+        {
+            AddError("At least one time slot is required");
+            await SendErrorsAsync();
+            return;
+        }
+
         var location = new Location(req.Location.Country, req.Location.City, req.Location.Address);
-        var service = new OfferedService(user!, req.Name, req.Description, location);
+        var service = new OfferedService(
+            user, req.Name, req.Description, location,
+            req.TimeSlots.Select(t => new TimeSlotSpan(t.Start, t.End)).ToList());
         
         try
         {
@@ -50,6 +58,7 @@ public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServic
         }
 
         Response.Message = "Service created";
-        await SendOkAsync(ct); 
+        Response.Service = new OfferedServiceDto(service);
+        await SendOkAsync(Response,ct); 
     }
 }

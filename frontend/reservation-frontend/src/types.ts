@@ -61,7 +61,8 @@ export interface OfferedService {
     owner: UserDto | null,
     name: string,
     description: string,
-    location: LocationDto
+    location: LocationDto,
+    imageFileName?: string,
     timeSlots?: TimeSlotDto[]
 }
 export interface TimeSlotStateDto{
@@ -69,7 +70,7 @@ export interface TimeSlotStateDto{
     start: string,
     end: string,
     available: boolean,
-    reservedById: number
+    reservedById: number,
     blocked: boolean
 }
 export interface TimeSlotDto{
@@ -92,6 +93,7 @@ export interface RemoveServiceResponse {
 
 export interface CreateServiceResponse {
     message: string
+    service: OfferedService
 }
 
 export interface UpdateServiceResponse {

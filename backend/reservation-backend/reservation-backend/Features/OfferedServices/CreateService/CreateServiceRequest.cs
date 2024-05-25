@@ -8,4 +8,5 @@ public class CreateServiceRequest : IServiceNameDescRequest, IServiceLocationReq
     public string Name { get; set; }
     public string Description { get; set; }
     public LocationDto Location { get; set; }
+    public List<TimeSlotDto> TimeSlots { get; set; }
 }

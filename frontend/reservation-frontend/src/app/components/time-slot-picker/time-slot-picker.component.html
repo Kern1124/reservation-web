@@ -1,0 +1,30 @@
+<mat-card>
+    <h3 mat-card-title>Picked timeslots:</h3>
+    <mat-list class="time-picker-list">
+        <mat-list-item *ngFor="let timeslot of timeSlots">
+            <span matListItemTitle>{{timeslot.fullSpan}}</span>
+            <span matListItemMeta>
+                <mat-icon class="time-slot-removeicon"
+                    (click)="removeTimeSlot(timeslot)">close</mat-icon>
+            </span>
+        </mat-list-item>
+        <div class="time-picker-row">
+            <ngx-timepicker-field #left [minutesGap]="5"
+                (timeChanged)="enforceCorrectPeriod(left, right)"
+                [controlOnly]="true" [format]="24"></ngx-timepicker-field>
+            <ngx-timepicker-field #right [minutesGap]="5"
+                (timeChanged)="enforceCorrectPeriod(left, right)"
+                [controlOnly]="true" [format]="24"></ngx-timepicker-field>
+            <button
+                (click)="onTimeSlotAdd(left.timepickerTime, right.timepickerTime)"
+                mat-button>Add</button>
+        </div>
+    </mat-list>
+    <div class="error" *ngIf="timeSlotAddError">You must define a valid
+        time-slot period!</div>
+    <div class="error" *ngIf="timeSlotAddOverlap">Time slots must not
+        overlap!</div>
+    <div class="time-picker-buttons">
+        <button mat-button (click)="onClose()">Close</button>
+    </div>
+</mat-card>

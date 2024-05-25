@@ -5,7 +5,7 @@ public class TimeSlotDto
     public string Start { get; set; }
     public string End { get; set; }
     public string FullSpan { get; set; }
-
+    public TimeSlotDto(){}
     public TimeSlotDto(string start, string end)
     {
         Start = start;

@@ -14,6 +14,7 @@ public class Context : DbContext
     public virtual DbSet<Country> Countries { get; set; }
     public virtual DbSet<City> Cities { get; set; }
     public virtual DbSet<Notification> Notifications { get; set; }
+
     public Context(){}
     public Context(DbContextOptions<Context> options) : base(options)
     {

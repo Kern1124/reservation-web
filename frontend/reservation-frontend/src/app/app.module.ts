@@ -31,6 +31,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReservationListComponent } from './components/reservation-list/reservation-list.component';
 import { MatSelectModule } from '@angular/material/select';
 import { ServiceReservationsComponent } from './components/service-reservations/service-reservations.component';
+import { TimeSlotPickerComponent } from './components/time-slot-picker/time-slot-picker.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,8 @@ import { ServiceReservationsComponent } from './components/service-reservations/
     ServiceManagerComponent,
     ServiceManagementModalComponent,
     ReservationListComponent,
-    ServiceReservationsComponent
+    ServiceReservationsComponent,
+    TimeSlotPickerComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +67,8 @@ import { ServiceReservationsComponent } from './components/service-reservations/
     MatNativeDateModule,
     MatDialogModule,
     MatExpansionModule,
-    MatSelectModule
+    MatSelectModule,
+    NgxMaterialTimepickerModule
   ],
   providers: [
     provideHttpClient(withInterceptors([credentialsInterceptor])),

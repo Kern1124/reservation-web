@@ -31,6 +31,7 @@ public class ReservationService : IReservationService
         try
         {
             service = await _databaseContext.OfferedServices
+                .Include(s => s.TimeSlots)
                 .Include(s => s.Owner)
                 .Include(s => s.Location)
                 .FirstAsync(s => s.Id == serviceId);
@@ -71,6 +72,7 @@ public class ReservationService : IReservationService
     {
         return await _databaseContext.Reservations
             .Include(r => r.OfferedService)
+            .Include(r => r.OfferedService.TimeSlots)
             .Include(r => r.OfferedService.Location)
             .Include(r => r.User)
             .Where(r => r.User.Id == id).ToListAsync();

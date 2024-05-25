@@ -35,7 +35,6 @@ export class ServiceReservationsComponent {
       {
         this.reservationsService.removeReservation(r.id).subscribe(v => {
           if (index == (this.selected.length - 1)){
-            console.log(index)
             this.fetchServiceReservations();
             this.snackBar.open("Selected reservations removed.", "Dismiss", {duration: 3000})
           }

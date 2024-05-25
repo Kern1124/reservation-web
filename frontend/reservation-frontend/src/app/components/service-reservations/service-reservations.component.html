@@ -1,6 +1,6 @@
 <mat-card>
     <h3 mat-card-title>Reservations - {{data.name}}</h3>
-    <mat-selection-list [(ngModel)]="selected" (ngModelChange)="onNgModelChange($event)" #selectedReservations>
+    <mat-selection-list [(ngModel)]="selected" #selectedReservations>
         <mat-list-option [value]="reservation" *ngFor="let reservation of serviceReservations">
             <div matListItemTitle>Reservation ({{reservation.id}}): {{reservation.dateStart.split("T")[0]}} - ({{reservation.timeSlot}})</div>
             <div matListItemLine>

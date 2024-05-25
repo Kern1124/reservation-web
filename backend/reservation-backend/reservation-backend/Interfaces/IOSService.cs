@@ -11,6 +11,7 @@ public interface IOSService
     public Task<List<Reservation>> GetServiceReservations(int id);
     public Task<OfferedService> GetServiceById(int id);
     public Task<OfferedService> AddService(OfferedService service);
-    public void DeleteService(int id);
-    public void UpdateService(OfferedService service, (string? name, string? desc) newServiceDetails);
+    public Task<int> UpdateServiceImage(int id, IFormFile img);
+    public Task<int> DeleteService(int id);
+    public Task<int> UpdateService(OfferedService service, (string? name, string? desc) newServiceDetails);
 }

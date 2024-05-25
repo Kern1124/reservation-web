@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { CreateServiceResponse, GetServicesByOwnerIdResponse, GetServicesResponse, GetTimeSlotsResponse, LocationDto, OfferedService, RemoveServiceResponse, UpdateServiceResponse } from 'src/types';
+import { CreateServiceResponse, GetServicesByOwnerIdResponse, GetServicesResponse, GetTimeSlotsResponse, LocationDto, OfferedService, RemoveServiceResponse, TimeSlotDto, UpdateServiceResponse } from 'src/types';
 import { env } from '../env';
 import { Observable } from 'rxjs';
 
@@ -23,8 +23,8 @@ export class OfferedServicesService {
     return this.api.get(`${env.apiUrl}/services/${serviceId}/time-slots/${date}`)
   }
 
-  public createService = (name: string, description: string, location: LocationDto): Observable<CreateServiceResponse> => {
-    return this.api.post(`${env.apiUrl}/services/`, {name: name, description: description, location: location})
+  public createService = (name: string, description: string, location: LocationDto, timeSlots: TimeSlotDto[]): Observable<CreateServiceResponse> => {
+    return this.api.post(`${env.apiUrl}/services/`, {name: name, description: description, location: location, timeSlots: timeSlots})
   }
 
   public removeService = (id: number): Observable<RemoveServiceResponse> => {
@@ -41,5 +41,11 @@ export class OfferedServicesService {
 
   public getServiceReservations = (id: number): Observable<any> => {
     return this.api.get(`${env.apiUrl}/services/${id}/reservations/`)
+  }
+
+  public updateServiceImage = (id: number, file: File): Observable<any> => {
+    const formData: FormData = new FormData();
+    formData.append("image", file, file.name); 
+    return this.api.putFile(`${env.apiUrl}/services/${id}/image/`, formData);
   }
 }

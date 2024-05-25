@@ -31,6 +31,12 @@
     <ItemGroup>
       <Folder Include="Interfaces\ResponseInterfaces\" />
       <Folder Include="Log\" />
+      <Folder Include="wwwroot\" />
+      <Folder Include="wwwroot\images\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\images\Screenshot.png" />
     </ItemGroup>
 
 </Project>

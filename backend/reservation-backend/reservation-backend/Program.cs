@@ -50,7 +50,6 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -59,7 +58,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(); 
 }
-
+app.UseStaticFiles();
+app.UseFileServer();
+app.UseDirectoryBrowser();
 app.UseCors("specificOrigins");
 
 app.UseHttpsRedirection();

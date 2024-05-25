@@ -11,11 +11,15 @@
   <mat-card *ngFor="let service of (showcasedServices && showcasedServices.slice(lowValue, highValue) ) "
     class="service-card">
     <mat-card-title>{{service.name}}</mat-card-title>
-    <mat-card-subtitle>{{service.location.country}} - {{service.location.city}}
+    <mat-card-subtitle>
+      <div>
+        {{service.location.country}} - {{service.location.city}}
+      </div>
+      <div>
+        ({{service.location.address}})
+      </div>
     </mat-card-subtitle>
-    <mat-card-subtitle>{{service.location.city}}
-      ({{service.location.address}})</mat-card-subtitle>
-    <img src="https://material.angular.io/assets/img/examples/shiba2.jpg" />
+    <img [src]="imageStorage + '/' + service.imageFileName" />
     <mat-card-actions>
       <button *ngIf="(authService.isAuthenticatedFn())" mat-raised-button
         (click)="openDialog(service)">Book</button>

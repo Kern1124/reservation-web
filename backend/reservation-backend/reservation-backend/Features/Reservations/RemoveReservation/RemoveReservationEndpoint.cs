@@ -42,11 +42,14 @@ public class RemoveReservationEndpoint : Endpoint<RemoveReservationRequest, Remo
         }
         else
         {
-            var message = isOwner ?
-                $"User {reservation.User.Username} has cancelled his reservation" :
-                $"Your reservation for service {reservation.OfferedService.Name} has been cancelled";
-            
-            await NotificationService.SendNotification(userId,
+            // If the request sender is the owner, send a notification to the user that has made the reservation...
+            // Otherwise send a notification to the owner that the reservation has been cancelled.
+            var message = isOwner
+                ? $"Your reservation for service {reservation.OfferedService.Name} has been cancelled"
+                : $"User {reservation.User.Username} has cancelled his reservation";
+
+            await NotificationService.SendNotification(isOwner ? 
+                    reservation.User.Id : reservation.OfferedService.Owner.Id,
                 $"Reservation - {reservation.OfferedService.Name}",
                 message);
             ReservationService.RemoveReservation(reservation!);

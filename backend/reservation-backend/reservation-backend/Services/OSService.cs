@@ -30,6 +30,7 @@ public class OSService : IOSService
     public async Task<List<OfferedService>> GetAllServices()
     {
         return await _databaseContext.OfferedServices
+            .Include(s => s.TimeSlots)
             .Include(s => s.Owner)
             .Include(s => s.Location)
             .ToListAsync();
@@ -40,6 +41,7 @@ public class OSService : IOSService
         try
         {
             return await _databaseContext.OfferedServices
+                .Include(s => s.TimeSlots)
                 .Include(s => s.Owner)
                 .Include(s => s.Location)
                 .FirstAsync(s => s.Id == id);
@@ -52,26 +54,18 @@ public class OSService : IOSService
 
     public async Task<OfferedService> AddService(OfferedService service)
     {
-        OfferedService? result;
-        try
-        {
-            if (_databaseContext.OfferedServices
-                .Include(s => s.Location)
-                .Any(s => s.Name == service.Name && s.Location.Country == service.Location.Country))
-            {
-                throw new ResourceExistsException("Service with this name and country already exists");
-            }
-            result = _databaseContext.OfferedServices.Add(service).Entity;
-            await _databaseContext.SaveChangesAsync();
-        }
-        catch (Exception e)
+        if (_databaseContext.OfferedServices
+            .Include(s => s.Location)
+            .Any(s => s.Name == service.Name && s.Location.Country == service.Location.Country))
         {
             throw new ResourceExistsException("Service with this name and country already exists");
         }
+        var result = _databaseContext.OfferedServices.Add(service).Entity;
+        await _databaseContext.SaveChangesAsync();
         return result;
     }
 
-    public async void UpdateService(OfferedService service, (string? name, string? desc) newServiceDetails)
+    public async Task<int> UpdateService(OfferedService service, (string? name, string? desc) newServiceDetails)
     {
         OfferedService entity;
         try
@@ -99,10 +93,10 @@ public class OSService : IOSService
             entity.Description = newServiceDetails.desc;
         }
 
-        await _databaseContext.SaveChangesAsync();
+        return await _databaseContext.SaveChangesAsync();
     }
 
-    public async void DeleteService(int id)
+    public async Task<int> DeleteService(int id)
     {
         OfferedService? foundService;
         try
@@ -114,8 +108,12 @@ public class OSService : IOSService
         {
             throw new ResourceNotFoundException($"Service with id: '{id}' not found.");
         }
+        if (foundService.ImageUri != null && File.Exists(foundService.ImageUri))
+        {
+            File.Delete(foundService.ImageUri);
+        }
         _databaseContext.OfferedServices.Remove(foundService);
-        await _databaseContext.SaveChangesAsync();
+        return await _databaseContext.SaveChangesAsync();
     }
     
     public async Task<List<TimeSlotStateDto>> GetTimeSlotsByServiceIdAndDate(int id, DateTime date)
@@ -127,9 +125,9 @@ public class OSService : IOSService
                 .Where(r => r.OfferedService.Id == id && r.DateStart.Date == date.Date)
                 .ToListAsync();
             var service = await _databaseContext.OfferedServices
+                .Include(s => s.TimeSlots)
                 .FirstOrDefaultAsync(s => s.Id == id);
-            // We want to throw if service doesn't exist. Therefore we do not use the nullable operator.
-            // The warning on TimeSlots is false.
+            
             result = service!.TimeSlots
                 .Select(t => CheckAvailabilityAndReturnState(id, date, t, existingReservations))
                 .ToList();
@@ -145,8 +143,10 @@ public class OSService : IOSService
     public async Task<List<OfferedService>> GetServicesByOwnerId(int id)
     {
         var result = await _databaseContext.OfferedServices
+            .Include(s => s.TimeSlots)
             .Include(s => s.Owner)
-            .Where(s => s.Owner.Id == id).Include(s=> s.Location).ToListAsync();
+            .Include(s=> s.Location)
+            .Where(s => s.Owner.Id == id).ToListAsync();
         return result;
 
     }
@@ -159,5 +159,21 @@ public class OSService : IOSService
             .Where(r => r.OfferedService.Id == id)
             .ToListAsync();
         return result;
+    }
+    
+    
+    
+    public async Task<int> UpdateServiceImage(int id, IFormFile img)
+    {
+        var foundService = await _databaseContext.OfferedServices
+            .FindAsync(id) ?? throw new ResourceNotFoundException($"Service with id: '{id}' not found.");
+
+        if (foundService.ImageUri != null && File.Exists(foundService.ImageUri))
+        {
+            File.Delete(foundService.ImageUri);
+        }
+
+        foundService.ImageUri = FileService.SaveFile(img, FileService.ImageFolderPath);
+        return await _databaseContext.SaveChangesAsync();
     }
 }

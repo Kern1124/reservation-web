@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { Options } from 'src/types';
+import { Form } from '@angular/forms';
 @Injectable({
   providedIn: 'root'
 })
@@ -23,4 +24,8 @@ export class ApiService {
   delete<T>(url: string, options?: Options): Observable<T>{
     return this.httpClient.delete(url, options) as Observable<T>;
   }
+  putFile<T>(url: string, file: FormData): Observable<T>{
+    return this.httpClient.put(url, file) as Observable<T>;
+  }
+
 }

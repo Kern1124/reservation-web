@@ -1,0 +1,45 @@
+mat-card *{
+    width: 100%;
+}
+
+mat-card{
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    height: 100%;
+}
+
+mat-list-item {
+    justify-content: space-between;
+    display: flex;
+}
+mat-list-item * {
+    flex: 1 1 0;
+}
+.time-slot-removeicon {
+    max-width: 20px;
+    padding: 0;
+    margin: 0;
+}
+.time-slot-removeicon:hover{
+    cursor: pointer;
+}
+.time-slot-button {
+    width: 20%;
+}
+.time-picker-list {
+    height: 100%;
+    overflow: scroll;
+}
+.time-picker-row {
+    display: flex;
+    gap: 1em;
+    padding: 0.5em;
+}
+.time-picker-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+.error {
+    color: red;
+}

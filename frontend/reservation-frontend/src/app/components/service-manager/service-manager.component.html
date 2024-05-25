@@ -13,14 +13,16 @@
                         {{service.name}}
                     </mat-panel-title>
                     <mat-panel-description>
-                        {{service.location.country}} - {{service.location.city}} ({{service.location.address}})
+                        {{service.location.country}} - {{service.location.city}}
+                        ({{service.location.address}})
                     </mat-panel-description>
                 </mat-expansion-panel-header>
                 <h4 mat>Description:</h4>
                 <p>{{ service.description }}</p>
                 <mat-action-row>
-                    <button mat-button 
-                        (click)="openReservations(service)">Show reservations</button>
+                    <button mat-button
+                        (click)="openReservations(service)">Show
+                        reservations</button>
                     <button mat-button
                         (click)="openService(service)">Manage</button>
                     <button mat-button class="remove-button"
@@ -36,7 +38,7 @@
                 You can create your own service here:
             </p>
         </mat-card-subtitle>
-        <form class="service-creator-form" [formGroup]="this.createServiceForm"
+        <form class="service-creator-form" #form="ngForm" [formGroup]="this.createServiceForm"
             (ngSubmit)="createService()">
             <mat-label></mat-label>
             <mat-form-field>
@@ -62,10 +64,12 @@
             <div class="form-select-container">
                 <mat-form-field>
                     <mat-label>Service country</mat-label>
-                    <mat-select [(value)]="selectedCountry" formControlName="country"
+                    <mat-select [(value)]="selectedCountry"
+                        formControlName="country"
                         [errorStateMatcher]="this.errorStateMatcher"
                         placeholder="Country">
-                        <mat-option *ngFor="let country of countries" [value]="country">
+                        <mat-option *ngFor="let country of countries"
+                            [value]="country">
                             {{country.name}}
                         </mat-option>
                     </mat-select>
@@ -73,17 +77,30 @@
                 <mat-form-field>
                     <mat-label>Service city</mat-label>
                     <mat-select formControlName="city"
-                        [errorStateMatcher]="this.errorStateMatcher" placeholder="City">
-                        <mat-option *ngFor="let city of selectedCountry.cities" [value]="city">{{city}}</mat-option>
-                     </mat-select>
+                        [errorStateMatcher]="this.errorStateMatcher"
+                        placeholder="City">
+                        <mat-option *ngFor="let city of selectedCountry.cities"
+                            [value]="city">{{city}}</mat-option>
+                    </mat-select>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Service address</mat-label>
-                    <input matInput [errorStateMatcher]="this.errorStateMatcher" formControlName="address" placeholder="Address">
+                    <input matInput [errorStateMatcher]="this.errorStateMatcher"
+                        formControlName="address" placeholder="Address">
                 </mat-form-field>
             </div>
+            <div class="file-button">
+                <button type="button" mat-raised-button (click)="pickTimeSlots()">Pick time slots *</button>
+                <div *ngIf="(!selectedTimeSlots && form.submitted)" class="error">Image thumbnail is required!</div>
+            </div>
+            <div class="file-button">
+                <button type="button" mat-raised-button (click)="fileInput.click()">Upload thumbnail image *</button>
+                <input hidden accept=".png, .text" (change)="onFileSelected($event)" #fileInput type="file">
+                <span class="file-name">{{selectedFile?.name}}</span>
+                <div *ngIf="(!selectedFile && form.submitted)" class="error">Image thumbnail is required!</div>
+            </div>
             <div class="button-container">
-                <button mat-button (submit)="createService()">Create</button>
+                <button mat-raised-button color="primary" (submit)="createService()">Create</button>
             </div>
         </form>
     </mat-card>

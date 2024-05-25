@@ -7,6 +7,7 @@ import { GridColsDirective } from 'src/app/utils/gridresize-directive';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
+import { env } from 'src/app/env';
 @Component({
   selector: 'app-service-list',
   templateUrl: './service-list.component.html',
@@ -17,8 +18,10 @@ import { PageEvent } from '@angular/material/paginator';
 export class ServiceListComponent{
   lowValue: number = 0;
   highValue: number = 20;  
+  imageStorage = env.imageStorageUrl;
   fetchedServices: OfferedService[];
   showcasedServices: OfferedService[];
+
   constructor(
     public router: Router, 
     public dialog: MatDialog, 
