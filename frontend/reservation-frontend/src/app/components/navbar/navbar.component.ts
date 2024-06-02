@@ -1,24 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
-import { NotificationDto, UserDto } from 'src/types';
+import { GetMyNotificationsResponse, NotificationDto, UserDto } from 'src/types';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   currentUser: UserDto;
-  notifications: NotificationDto[]
+  notifications: NotificationDto[] | undefined
   unreadNotifications: NotificationDto[]
   constructor(
     public notificationsService: NotificationsService, 
     public authService: AuthService, 
     public router: Router){
-      this.fetchNotifications();
     }
+
+  ngOnInit(): void {
+    this.fetchNotifications()
+  }
   
   onLogout = () => {
     this.authService.logout();
@@ -41,9 +44,9 @@ export class NavbarComponent {
 
   setAllAsRead = () => {
     let index: number = 0
-    this.notifications.forEach((n) => {
+    this.notifications!.forEach((n) => {
       this.notificationsService.setNotificationAsRead(n.id).subscribe(v => {
-        if (index == (this.notifications.length - 1)){
+        if (index == (this.notifications!.length - 1)){
           this.fetchNotifications();
         }
         index++;
@@ -52,9 +55,9 @@ export class NavbarComponent {
   }
 
   fetchNotifications = () => {
-    this.notificationsService.getMyNotifications().subscribe( v => {
-      this.notifications = v.notifications;
-    })
+    this.notificationsService.getMyNotifications().subscribe(
+      v => this.notifications = v.notifications
+    )
   }
   
 }

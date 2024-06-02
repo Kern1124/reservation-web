@@ -173,7 +173,7 @@ public class OSService : IOSService
             File.Delete(foundService.ImageUri);
         }
 
-        foundService.ImageUri = FileService.SaveFile(img, FileService.ImageFolderPath);
+        foundService.ImageUri = FileService.SaveFile(img, $"img_{id}" ,FileService.ImageFolderPath);
         return await _databaseContext.SaveChangesAsync();
     }
 }

@@ -10,6 +10,10 @@ import { noAuthGuard } from './guards/no-auth.guard';
 import { ReservationListComponent } from './components/reservation-list/reservation-list.component';
 
 export const routes: Routes = [
+  { 
+    path: '',
+    redirectTo: '/home', 
+    pathMatch: 'full' },
   {
     path: "home",
     component: HomeComponent,

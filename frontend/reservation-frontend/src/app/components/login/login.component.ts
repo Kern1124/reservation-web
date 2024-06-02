@@ -4,6 +4,7 @@ import { Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationsService } from 'src/app/services/notifications.service';
 import { LoginResponse, ProblemDetails } from 'src/types';
 
 @Component({
@@ -12,7 +13,7 @@ import { LoginResponse, ProblemDetails } from 'src/types';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit{
-  constructor(private authService: AuthService, private router: Router){
+  constructor(private authService: AuthService, private router: Router, private notificationsService: NotificationsService){
   }
   submitted: boolean = false;
   failed: boolean = false;
@@ -35,6 +36,7 @@ export class LoginComponent implements OnInit{
         next: () => {
           this.router.navigate(["../home"])
           this.authService.refreshAuthenticated()
+          window.location.reload()
         },
         error: (errorResponse: HttpErrorResponse) => {
           console.log(errorResponse)

@@ -16,6 +16,7 @@ export function credentialsInterceptor (
         (err: any) => {
             if (err instanceof HttpErrorResponse){
                 if (err.status === 401 || err.status === 404) {
+                    // empty for now
                 }
             }
             return throwError(() => err); 

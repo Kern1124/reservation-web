@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { AuthenticatedResponse, LoginRequest, LoginResponse, Options, RegisterRequest, RegisterResponse, UserDto } from 'src/types';
+import { AuthenticatedResponse, LoginRequest, LoginResponse, NotificationDto, Options, RegisterRequest, RegisterResponse, UserDto } from 'src/types';
 import { BehaviorSubject, catchError, map, Observable, of, shareReplay, Subject, tap } from 'rxjs';
 import { env } from '../env';
+import { NotificationsService } from './notifications.service';
 
 
 @Injectable({
@@ -55,4 +56,7 @@ export class AuthService {
     }
     )
   }
+
+
+
 }

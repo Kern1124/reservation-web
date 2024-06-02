@@ -7,6 +7,10 @@ import { last, map, shareReplay, skip, take, takeLast } from 'rxjs';
 export function authGuard(): CanActivateFn {
     return () => {
       const authService = inject(AuthService)
+      const router = inject(Router)
+      if (!authService.isAuthenticatedFn()){
+        router.navigate(["home"])
+      }      
       return authService.isAuthenticatedFn();
     };
   }
