@@ -4,11 +4,8 @@ using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using reservation_backend.Database;
 using reservation_backend.Interfaces;
-using reservation_backend.Models;
 using reservation_backend.Services;
 using Serilog;
-using Serilog.Extensions.Logging;
-using Serilog.RequestAndResponseLogging;
 
 var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
 var logger = new LoggerConfiguration()
@@ -52,7 +49,6 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

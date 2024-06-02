@@ -35,8 +35,4 @@
       <Folder Include="wwwroot\images\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Include="wwwroot\images\Screenshot.png" />
-    </ItemGroup>
-
 </Project>

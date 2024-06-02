@@ -10,6 +10,7 @@ public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServic
 {
     public IOSService OSService { get; set; }
     public IUserService UserService { get; set; }
+    public ILocationService LocationService { get; set; }
 
     public override void Configure()
     {
@@ -41,6 +42,13 @@ public class CreateServiceEndpoint : Endpoint<CreateServiceRequest, CreateServic
             return;
         }
 
+        if (!LocationService.CheckIfCityBelongsToCountry(req.Location.City, req.Location.Country))
+        {
+            AddError("The combination of the selected city and country is not valid");
+            await SendErrorsAsync();
+            return;
+        }
+        
         var location = new Location(req.Location.Country, req.Location.City, req.Location.Address);
         var service = new OfferedService(
             user, req.Name, req.Description, location,

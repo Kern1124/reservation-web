@@ -6,7 +6,6 @@
 **/*.db*
 **/*.txt
 **/.DS_Store
-
-
+**/wwwroot/images/*
 
 
